@@ -18,25 +18,53 @@
   inputs = {
     nixpkgs.url = github:nixos/nixpkgs/nixos-unstable;
 
-    flake-compat.url = "github:edolstra/flake-compat";
+    flake-compat.url = github:edolstra/flake-compat;
     flake-compat.flake = false;
 
-    flake-utils.url = "github:numtide/flake-utils";
+    flake-utils.url = github:numtide/flake-utils;
+
+    neovim-upstream.url = github:neovim/neovim?dir=contrib;
+    neovim-upstream.inputs.flake-utils.follows = "flake-utils";
   };
 
-  outputs = { self, nixpkgs, flake-utils, ... } @ inputs:
-    flake-utils.lib.eachDefaultSystem (system:
-      let
-        pkgs = nixpkgs.legacyPackages.${system};
-      in
-      {
-        formatter = pkgs.nixpkgs-fmt;
+  outputs = { nixpkgs, flake-utils, neovim-upstream, ... } @ inputs:
+    let
+      inherit (flake-utils.lib) eachDefaultSystem mkApp;
+    in
 
-        devShell = with pkgs; mkShell {
+    eachDefaultSystem (system:
+      let
+        pkgs = import nixpkgs {
+          inherit system;
+          overlays = [
+            neovim-upstream.overlay
+          ];
+        };
+      in
+
+      rec {
+        apps = rec {
+          nvim = mkApp {
+            drv = packages.neovim;
+            exePath = "/bin/nvim";
+          };
+
+          default = nvim;
+        };
+
+        devShells.default = with pkgs; mkShell {
           buildInputs = [
+            packages.neovim
             nixpkgs-fmt
             rnix-lsp
           ];
+        };
+
+        formatter = pkgs.nixpkgs-fmt;
+
+        packages = rec {
+          neovim = pkgs.neovim;
+          default = neovim;
         };
       }
     );
