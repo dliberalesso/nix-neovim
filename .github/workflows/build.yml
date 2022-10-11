@@ -1,0 +1,39 @@
+name: "Build"
+
+on:
+  pull_request:
+    branches:
+      - main
+
+  push:
+    branches:
+      - main
+
+    paths-ignore:
+      - "LICENSE"
+      - "README.md"
+      - ".editorconfig"
+      - ".gitattributes"
+      - ".gitignore"    
+
+  workflow_dispatch:
+
+jobs:
+  build:
+    name: Build & Cache
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: "Install Nix ❄️"
+        uses: cachix/install-nix-action@v17
+
+      - name: "Install Cachix ❄️"
+        uses: cachix/cachix-action@v10
+        with:
+          name: dliberalesso
+          authToken: "${{ secrets.CACHIX_AUTH_TOKEN }}"
+          extraPullNames: cachix, nix-community
+
+      - name: "Build Neovim Flake ❄️"
+        run: nix build .#neovim

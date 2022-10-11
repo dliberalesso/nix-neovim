@@ -1,0 +1,43 @@
+name: "Update"
+
+on:
+  schedule:  
+    - cron: "0 7 * * 3" # At 07:00 UTC on WED
+    - cron: "0 7 * * 0-2,4-6" # At 07:00 UTC from SUN to TUE & THU to SAT
+
+  workflow_dispatch:
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: "Install Nix ❄️"
+        uses: cachix/install-nix-action@v17
+
+      - name: "Update flake.lock"
+        uses: jessestricker/nix-flake-update@v1
+        id: nix-update
+
+      - name: "Create pull request"
+        uses: peter-evans/create-pull-request@v4        
+        id: cpr
+        with:
+          token: ${{ secrets.PAT }}
+          branch: update
+          delete-branch: true
+          committer: Douglas Liberalesso <dliberalesso@users.noreply.github.com>
+          commit-message: ${{ steps.nix-update.outputs.commit-message }}
+          author: Douglas Liberalesso <dliberalesso@users.noreply.github.com>
+          title: ${{ steps.nix-update.outputs.pull-request-title }}
+          body: ${{ steps.nix-update.outputs.pull-request-body }}
+          assignees: dliberalesso
+          labels: dependencies, nix
+      
+      - name: Enable Pull Request Automerge
+        if: (steps.cpr.outputs.pull-request-operation == 'created' || steps.cpr.outputs.pull-request-operation == 'updated') && (github.event_name == 'workflow_dispatch' || github.event.schedule == '0 7 * * 3')
+        uses: peter-evans/enable-pull-request-automerge@v2
+        with:
+          token: ${{ secrets.PAT }}
+          pull-request-number: ${{ steps.cpr.outputs.pull-request-number }}
