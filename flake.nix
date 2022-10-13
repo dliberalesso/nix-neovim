@@ -24,6 +24,7 @@
     flake-utils.url = github:numtide/flake-utils;
 
     neovim-upstream.url = github:neovim/neovim?dir=contrib;
+    neovim-upstream.inputs.nixpkgs.follows = "nixpkgs";
     neovim-upstream.inputs.flake-utils.follows = "flake-utils";
   };
 
