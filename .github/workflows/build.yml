@@ -23,17 +23,17 @@ jobs:
     name: Build & Cache
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: "Install Nix ❄️"
-        uses: cachix/install-nix-action@v19
+        uses: cachix/install-nix-action@v25
 
       - name: "Install Cachix ❄️"
-        uses: cachix/cachix-action@v12
+        uses: cachix/cachix-action@v14
         with:
           name: dliberalesso
           authToken: "${{ secrets.CACHIX_AUTH_TOKEN }}"
           extraPullNames: cachix, nix-community
 
       - name: "Build Neovim Flake ❄️"
-        run: nix build .#
+        run: nix build .# -v -L
