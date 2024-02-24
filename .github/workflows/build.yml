@@ -36,4 +36,4 @@ jobs:
           extraPullNames: cachix, nix-community
 
       - name: "Build Neovim Flake ❄️"
-        run: nix build .#neovim
+        run: nix build .#
