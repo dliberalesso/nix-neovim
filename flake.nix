@@ -16,57 +16,51 @@
   };
 
   inputs = {
-    nixpkgs.url = github:nixos/nixpkgs/nixos-unstable;
+    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
 
     flake-compat.url = github:edolstra/flake-compat;
     flake-compat.flake = false;
 
-    flake-utils.url = github:numtide/flake-utils;
+    flake-parts.url = "github:hercules-ci/flake-parts";
 
-    neovim-upstream.url = github:neovim/neovim?dir=contrib;
-    neovim-upstream.inputs.nixpkgs.follows = "nixpkgs";
-    neovim-upstream.inputs.flake-utils.follows = "flake-utils";
+    nixvim.url = "github:nix-community/nixvim";
+    nixvim.inputs.nixpkgs.follows = "nixpkgs";
+    nixvim.inputs.flake-compat.follows = "flake-compat";
+    nixvim.inputs.flake-parts.follows = "flake-parts";
   };
 
-  outputs = { nixpkgs, flake-utils, neovim-upstream, ... } @ inputs:
-    let
-      inherit (flake-utils.lib) eachDefaultSystem mkApp;
-    in
+  outputs = { nixvim, flake-parts, ... } @ inputs:
+    flake-parts.lib.mkFlake {inherit inputs;} {
+      systems = [
+        "x86_64-linux"
+        "aarch64-linux"
+        "x86_64-darwin"
+        "aarch64-darwin"
+      ];
 
-    eachDefaultSystem (system:
+      perSystem = { pkgs, system, ... }:
       let
-        pkgs = import nixpkgs {
-          inherit system;
-          overlays = [
-            neovim-upstream.overlay
-          ];
-        };
-      in
-
-      rec {
-        apps = rec {
-          nvim = mkApp {
-            drv = packages.neovim;
-            exePath = "/bin/nvim";
+        nixvimLib = nixvim.lib.${system};
+        nixvim' = nixvim.legacyPackages.${system};
+        nixvimModule = {
+          inherit pkgs;
+          module = import ./config; # import the module directly
+          # You can use `extraSpecialArgs` to pass additional arguments to your module files
+          extraSpecialArgs = {
+            # inherit (inputs) foo;
           };
+        };
+        nvim = nixvim'.makeNixvimWithModule nixvimModule;
+      in {
+        checks = {
+          # Run `nix flake check .` to verify that your config is not broken
+          default = nixvimLib.check.mkTestDerivationFromNixvimModule nixvimModule;
+        };
 
+        packages = {
+          # Lets you run `nix run .` to start nixvim
           default = nvim;
         };
-
-        devShells.default = with pkgs; mkShell {
-          buildInputs = [
-            packages.neovim
-            nixpkgs-fmt
-            rnix-lsp
-          ];
-        };
-
-        formatter = pkgs.nixpkgs-fmt;
-
-        packages = rec {
-          neovim = pkgs.neovim;
-          default = neovim;
-        };
-      }
-    );
+      };
+    };
 }
