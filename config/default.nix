@@ -1,7 +1,7 @@
+{ inputs, pkgs, ... }:
+
 {
-  # Import all your configuration modules here
   imports = [
-    ./bufferline.nix
     ./options.nix
   ];
 
@@ -13,9 +13,14 @@
   clipboard.register = "unnamedplus";
 
   plugins = {
+    bufferline.enable = true;
     lualine.enable = true;
     treesitter.enable = true;
   };
+
+  extraPlugins = with pkgs.vimPlugins; [
+    vim-sleuth
+  ];
 
   extraConfigVim = ''
     aunmenu PopUp.How-to\ disable\ mouse
