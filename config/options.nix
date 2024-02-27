@@ -46,7 +46,10 @@
       cursorline = true;
 
       # Minimal number of screen lines to keep above and below the cursor.
-      scrolloff = 10;        
+      scrolloff = 10;
+
+      # Set highlight on search
+      hlsearch = true;
     };
   };
 }
