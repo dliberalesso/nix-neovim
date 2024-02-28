@@ -4,6 +4,7 @@
   ...
 }: {
   imports = [
+    ./devicons.nix
     ./gitsigns.nix
     ./lualine.nix
     ./telescope.nix
@@ -13,10 +14,9 @@
   plugins = {
     comment-nvim.enable = true;
     bufferline.enable = true;
+    indent-o-matic.enable = true;
     treesitter.enable = true;
   };
 
-  extraPlugins = with pkgs.vimPlugins; [
-    vim-sleuth
-  ];
+  extraPlugins = with pkgs.vimPlugins; [];
 }
