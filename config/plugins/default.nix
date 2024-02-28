@@ -3,6 +3,7 @@
 {
   imports = [
     ./gitsigns.nix
+    ./telescope.nix
     ./which-key.nix
   ];
 
