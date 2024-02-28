@@ -11,9 +11,6 @@
 
   editorconfig.enable = true;
 
-  # Sync clipboard between OS and Neovim
-  clipboard.register = "unnamedplus";
-
   plugins = {
     bufferline.enable = true;
     lualine.enable = true;
