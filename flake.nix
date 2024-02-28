@@ -29,7 +29,11 @@
     nixvim.inputs.flake-parts.follows = "flake-parts";
   };
 
-  outputs = { nixvim, flake-parts, ... } @ inputs:
+  outputs = {
+    nixvim,
+    flake-parts,
+    ...
+  } @ inputs:
     flake-parts.lib.mkFlake {inherit inputs;} {
       systems = [
         "x86_64-linux"
@@ -38,8 +42,11 @@
         "aarch64-darwin"
       ];
 
-      perSystem = { pkgs, system, ... }:
-      let
+      perSystem = {
+        pkgs,
+        system,
+        ...
+      }: let
         nixvimLib = nixvim.lib.${system};
         nixvim' = nixvim.legacyPackages.${system};
         nixvimModule = {
