@@ -23,10 +23,16 @@
 
     flake-parts.url = "github:hercules-ci/flake-parts";
 
+    pre-commit-hooks.url = "github:cachix/pre-commit-hooks.nix";
+    pre-commit-hooks.inputs.nixpkgs.follows = "nixpkgs";
+    pre-commit-hooks.inputs.nixpkgs-stable.follows = "nixpkgs";
+    pre-commit-hooks.inputs.flake-compat.follows = "flake-compat";
+
     nixvim.url = "github:nix-community/nixvim";
     nixvim.inputs.nixpkgs.follows = "nixpkgs";
     nixvim.inputs.flake-compat.follows = "flake-compat";
     nixvim.inputs.flake-parts.follows = "flake-parts";
+    nixvim.inputs.pre-commit-hooks.follows = "pre-commit-hooks";
   };
 
   outputs = {
@@ -40,6 +46,10 @@
         "aarch64-linux"
         "x86_64-darwin"
         "aarch64-darwin"
+      ];
+
+      imports = [
+        inputs.pre-commit-hooks.flakeModule
       ];
 
       perSystem = {
@@ -65,6 +75,12 @@
         };
 
         formatter = pkgs.alejandra;
+
+        pre-commit = {
+          settings = {
+            hooks.alejandra.enable = true;
+          };
+        };
 
         packages = {
           # Lets you run `nix run .` to start nixvim
