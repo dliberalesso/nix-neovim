@@ -3,6 +3,7 @@
 {
   imports = [
     ./gitsigns.nix
+    ./lualine.nix
     ./telescope.nix
     ./which-key.nix
   ];
@@ -10,7 +11,6 @@
   plugins = {
     comment-nvim.enable = true;
     bufferline.enable = true;
-    lualine.enable = true;
     treesitter.enable = true;
   };
 
