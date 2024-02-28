@@ -11,6 +11,9 @@
       number = true;
       relativenumber = true;
 
+      # Tab width should be 2
+      shiftwidth = 2;
+
       # Don't show the mode, since it's already in status line
       showmode = false;
 
