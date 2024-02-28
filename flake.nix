@@ -57,10 +57,20 @@
           default = nixvimLib.check.mkTestDerivationFromNixvimModule nixvimModule;
         };
 
+        formatter = pkgs.alejandra;
+
         packages = {
           # Lets you run `nix run .` to start nixvim
           default = nvim;
         };
+
+        devShells.default = with pkgs;
+          mkShell {
+            buildInputs = [
+              alejandra
+              nvim
+            ];
+          };
       };
     };
 }
