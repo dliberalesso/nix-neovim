@@ -3,6 +3,7 @@
 {
   imports = [
     ./gitsigns.nix
+    ./which-key.nix
   ];
 
   plugins = {
