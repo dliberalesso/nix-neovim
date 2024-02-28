@@ -12,13 +12,18 @@
       relativenumber = true;
 
       # Tab width should be 2
+      tabstop = 2;
+      softtabstop = 2;
+      showtabline = 2;
+      expandtab = true;
       shiftwidth = 2;
+
+      # Enable smart indenting
+      smartindent = true;
+      breakindent = true;
 
       # Don't show the mode, since it's already in status line
       showmode = false;
-
-      # Enable break indent
-      breakindent = true;
 
       # Save undo history
       undofile = true;
