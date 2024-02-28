@@ -1,7 +1,9 @@
 { inputs, pkgs, ... }:
 
 {
-  imports = [];
+  imports = [
+    ./gitsigns.nix
+  ];
 
   plugins = {
     comment-nvim.enable = true;
