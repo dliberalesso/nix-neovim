@@ -1,14 +1,12 @@
-{ pkgs, ... }:
-
-{
+{pkgs, ...}: {
   extraPlugins = [
     (pkgs.vimUtils.buildVimPlugin {
       name = "incline-nvim";
       src = pkgs.fetchFromGitHub {
-          owner = "b0o";
-          repo = "incline.nvim";
-          rev = "2f5f6094089b29ee1e626cd9459fb42ce249e191";
-          hash = "sha256-tu8KrBnw6mqaACgmgdTvfLhFp5EGAsA7xp0SLbsMXTI=";
+        owner = "b0o";
+        repo = "incline.nvim";
+        rev = "2f5f6094089b29ee1e626cd9459fb42ce249e191";
+        hash = "sha256-tu8KrBnw6mqaACgmgdTvfLhFp5EGAsA7xp0SLbsMXTI=";
       };
     })
   ];
