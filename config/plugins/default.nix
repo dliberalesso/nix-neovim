@@ -7,6 +7,7 @@
     ./devicons.nix
     ./gitsigns.nix
     ./incline.nix
+    ./lazygit.nix
     ./lualine.nix
     ./telescope.nix
     ./which-key.nix
