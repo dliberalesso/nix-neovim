@@ -14,7 +14,6 @@
       # Tab width should be 2
       tabstop = 2;
       softtabstop = 2;
-      showtabline = 2;
       expandtab = true;
       shiftwidth = 2;
 
@@ -58,6 +57,9 @@
 
       # Set highlight on search
       hlsearch = true;
+
+      # Hide tabline
+      showtabline = 0;
     };
   };
 }
