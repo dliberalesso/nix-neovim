@@ -14,7 +14,7 @@
   ];
 
   plugins = {
-    comment-nvim.enable = true;
+    comment.enable = true;
     indent-o-matic.enable = true;
     treesitter.enable = true;
   };
