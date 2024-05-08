@@ -36,64 +36,51 @@
   };
 
   outputs = {
-    nixvim,
+    nixpkgs,
     flake-parts,
+    nixvim,
     ...
   } @ inputs:
     flake-parts.lib.mkFlake {inherit inputs;} {
-      systems = [
-        "x86_64-linux"
-        "aarch64-linux"
-        "x86_64-darwin"
-        "aarch64-darwin"
-      ];
-
       imports = [
         inputs.pre-commit-hooks.flakeModule
       ];
+
+      systems = nixpkgs.lib.systems.flakeExposed;
 
       perSystem = {
         pkgs,
         system,
         ...
       }: let
-        nixvimLib = nixvim.lib.${system};
         nixvim' = nixvim.legacyPackages.${system};
-        nixvimModule = {
+        nvim = nixvim'.makeNixvimWithModule {
           inherit pkgs;
-          module = import ./config; # import the module directly
-          # You can use `extraSpecialArgs` to pass additional arguments to your module files
-          extraSpecialArgs = {
-            # inherit (inputs) foo;
-          };
+          module = import ./config;
         };
-        nvim = nixvim'.makeNixvimWithModule nixvimModule;
       in {
-        checks = {
-          # Run `nix flake check .` to verify that your config is not broken
-          default = nixvimLib.check.mkTestDerivationFromNixvimModule nixvimModule;
+        pre-commit.check.enable = true;
+        pre-commit.settings.hooks = {
+          alejandra.enable = true;
         };
 
+        # Run `nix flake check .` to verify that your config is not broken
+        checks.default = nixvim.lib.${system}.check.mkTestDerivationFromNvim {
+          inherit nvim;
+          name = "My Neovim config";
+        };
+
+        # Run `nix fmt` to format the entire code base
         formatter = pkgs.alejandra;
 
-        pre-commit = {
-          settings = {
-            hooks.alejandra.enable = true;
-          };
-        };
+        # Lets you run `nix run .` to start nixvim
+        packages.default = nvim;
 
-        packages = {
-          # Lets you run `nix run .` to start nixvim
-          default = nvim;
+        devShells.default = pkgs.mkShell {
+          nativeBuildInputs = with pkgs; [
+            nvim
+          ];
         };
-
-        devShells.default = with pkgs;
-          mkShell {
-            buildInputs = [
-              alejandra
-              nvim
-            ];
-          };
       };
     };
 }
