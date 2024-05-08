@@ -9,6 +9,7 @@
     ./incline.nix
     ./lazygit.nix
     ./lualine.nix
+    ./nvim-tree.nix
     ./telescope.nix
     ./which-key.nix
   ];
