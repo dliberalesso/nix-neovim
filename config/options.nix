@@ -6,7 +6,7 @@
       maplocalleader = " ";
     };
 
-    options = {
+    opts = {
       # Make line numbers default
       number = true;
       relativenumber = true;
