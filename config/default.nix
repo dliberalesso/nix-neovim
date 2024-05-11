@@ -1,16 +1,11 @@
-{
-  inputs,
-  pkgs,
-  ...
-}: {
+{pkgs, ...}: {
   imports = [
-    ./autocmds.nix
+    ./disable_plugins.nix
+    ./highlight_yank.nix
     ./keymaps.nix
     ./options.nix
     ./plugins
   ];
-
-  colorschemes.dracula.enable = true;
 
   editorconfig.enable = true;
 

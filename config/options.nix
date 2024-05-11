@@ -7,32 +7,65 @@
     };
 
     opts = {
+      # A lot of plugins depends on hidden true
+      hidden = true;
+
       # Make line numbers default
       number = true;
       relativenumber = true;
 
-      # Tab width should be 2
-      tabstop = 2;
-      softtabstop = 2;
+      # Keep signcolumn on by default
+      signcolumn = "yes";
+
+      # Show which line your cursor is on
+      cursorline = true;
+
+      # Statusline
+      laststatus = 3;
+
+      # Command line height
+      # cmdheight = 2;
+      cmdheight = 0;
+
+      # Don't show the mode, since it's already in status line
+      showmode = false;
+
+      # Hide tabline
+      showtabline = 0;
+
+      # Tab settings
+      tabstop = 4;
+      softtabstop = 4;
       expandtab = true;
-      shiftwidth = 2;
+      shiftwidth = 4;
 
       # Enable smart indenting
       smartindent = true;
       breakindent = true;
 
-      # Don't show the mode, since it's already in status line
-      showmode = false;
+      # No wrap
+      wrap = false;
 
-      # Save undo history
-      undofile = true;
+      # Minimal number of screen lines/columns to keep around the cursor.
+      scrolloff = 10;
+      sidescrolloff = 10;
+
+      # Set highlight on search
+      hlsearch = false;
+      incsearch = true;
+
+      # Preview substitutions live
+      inccommand = "split";
 
       # Case-insensitive searching UNLESS \C or capital in search
       ignorecase = true;
       smartcase = true;
 
-      # Keep signcolumn on by default
-      signcolumn = "yes";
+      # Better undo history
+      swapfile = false;
+      backup = false;
+      undodir = {__raw = "os.getenv('HOME') .. '/.cache/nvim/undodir'";};
+      undofile = true;
 
       # Decrease update time
       updatetime = 250;
@@ -44,22 +77,7 @@
 
       # Sets how neovim will display certain whitespace in the editor
       list = true;
-      listchars = "tab:» ,lead:·,space: ,trail:•,extends:→,precedes:←,nbsp:␣";
-
-      # Preview substitutions live
-      inccommand = "split";
-
-      # Show which line your cursor is on
-      cursorline = true;
-
-      # Minimal number of screen lines to keep above and below the cursor.
-      scrolloff = 10;
-
-      # Set highlight on search
-      hlsearch = true;
-
-      # Hide tabline
-      showtabline = 0;
+      listchars = "tab:» ,space: ,trail:•,extends:→,precedes:←,nbsp:␣";
     };
   };
 }

@@ -1,13 +1,8 @@
 {
-  autoGroups = {
-    highlight-yank = {
-      clear = true;
-    };
-  };
+  # Highlight when yanking (copying) text
+  #  See `:help vim.highlight.on_yank()`
 
   autoCmd = [
-    # Highlight when yanking (copying) text
-    #  See `:help vim.highlight.on_yank()`
     {
       event = ["TextYankPost"];
       desc = "Highlight when yanking (copying) text";
@@ -15,4 +10,6 @@
       callback.__raw = "function() vim.highlight.on_yank() end";
     }
   ];
+
+  autoGroups.highlight-yank.clear = true;
 }

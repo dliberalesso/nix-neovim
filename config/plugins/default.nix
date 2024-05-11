@@ -1,24 +1,22 @@
-{
-  inputs,
-  pkgs,
-  ...
-}: {
+{pkgs, ...}: {
+  plugins.lazy.enable = true;
+
   imports = [
-    ./devicons.nix
-    ./gitsigns.nix
-    ./incline.nix
-    ./lazygit.nix
-    ./lualine.nix
-    ./nvim-tree.nix
-    ./telescope.nix
-    ./which-key.nix
+    ./catppuccin.nix
+    ./git.nix
+    ./indentscope.nix
+    # ./lazygit.nix
+    # ./lualine.nix
+    ./statusline.nix
+    # ./nvim-tree.nix
+    ./tabline.nix
+    # ./telescope.nix
+    # ./which-key.nix
   ];
 
-  plugins = {
-    comment.enable = true;
-    indent-o-matic.enable = true;
-    treesitter.enable = true;
-  };
-
-  extraPlugins = with pkgs.vimPlugins; [];
+  # plugins = {
+  #   comment.enable = true;
+  #   indent-o-matic.enable = true;
+  #   treesitter.enable = true;
+  # };
 }
