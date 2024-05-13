@@ -66,6 +66,7 @@
       backup = false;
       undodir = {__raw = "os.getenv('HOME') .. '/.cache/nvim/undodir'";};
       undofile = true;
+      shada = ["'10" "<0" "s10" "h"];
 
       # Decrease update time
       updatetime = 250;
