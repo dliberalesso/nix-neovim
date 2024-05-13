@@ -4,6 +4,7 @@
   imports = [
     ./catppuccin.nix
     ./git.nix
+    ./incline.nix
     # ./lazygit.nix
     ./lualine.nix
     ./mini.nix
