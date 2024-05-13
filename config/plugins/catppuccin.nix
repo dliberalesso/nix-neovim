@@ -6,7 +6,7 @@
       lazy = false;
       priority = 1000;
 
-      config = ''
+      config = /* lua */ ''
         function(_, opts)
           require("catppuccin").setup(opts)
 
@@ -19,6 +19,7 @@
         integrations = {
           gitsigns = true;
           mini.enabled = true;
+          treesitter = true;
         };
       };
     }

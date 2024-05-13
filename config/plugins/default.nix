@@ -10,6 +10,7 @@
     ./mini.nix
     # ./nvim-tree.nix
     # ./telescope.nix
+    ./treesitter.nix
     # ./which-key.nix
   ];
 
