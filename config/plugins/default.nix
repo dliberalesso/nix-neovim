@@ -4,12 +4,10 @@
   imports = [
     ./catppuccin.nix
     ./git.nix
-    ./indentscope.nix
     # ./lazygit.nix
-    # ./lualine.nix
+    ./mini.nix
     ./statusline.nix
     # ./nvim-tree.nix
-    ./tabline.nix
     # ./telescope.nix
     # ./which-key.nix
   ];
