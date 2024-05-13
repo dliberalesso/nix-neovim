@@ -10,7 +10,7 @@
           hash = "sha256-6DpoLjU5C/F6Wr/2exfMOaEIFGsAhAvSPxzoZo3QnV8=";
         };
       };
-      
+
       event = "VeryLazy";
 
       dependencies = [
@@ -18,14 +18,14 @@
         nvim-web-devicons
       ];
 
-      config = ''
+      config = /* lua */ ''
         function()
           local devicons = require("nvim-web-devicons")
 
           require("incline").setup {
             render = function(props)
               local filename = vim.fn.fnamemodify(vim.api.nvim_buf_get_name(props.buf), ":t")
-              
+
               if filename == "" then
                 filename = "[No Name]"
               end
