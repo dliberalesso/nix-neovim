@@ -1,21 +1,18 @@
 {pkgs, ...}: {
   plugins.lazy.plugins = with pkgs.vimPlugins; [
     {
-      pkg = mini-nvim;
-      name = "mini-statusline";
+      pkg = lualine-nvim;
 
       event = "VeryLazy";
 
       dependencies = [
+        gitsigns-nvim
         nvim-web-devicons
       ];
 
       config = true;
-      main = "mini.statusline";
 
-      opts = {
-        set_vim_settings = false;
-      };
+      opts.options.theme = "catppuccin";
     }
   ];
 }
