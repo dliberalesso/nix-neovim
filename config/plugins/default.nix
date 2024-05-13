@@ -5,8 +5,8 @@
     ./catppuccin.nix
     ./git.nix
     # ./lazygit.nix
+    ./lualine.nix
     ./mini.nix
-    ./statusline.nix
     # ./nvim-tree.nix
     # ./telescope.nix
     # ./which-key.nix
