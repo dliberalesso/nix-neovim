@@ -16,7 +16,10 @@
 
       opts = {
         flavour = "mocha";
-        integrations.mini.enabled = true;
+        integrations = {
+          gitsigns = true;
+          mini.enabled = true;
+        };
       };
     }
   ];
