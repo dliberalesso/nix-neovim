@@ -96,6 +96,7 @@
 
             nativeBuildInputs = with pkgs; [
               nixd
+              nvim
             ];
           };
         };

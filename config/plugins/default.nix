@@ -11,7 +11,7 @@
     ./lualine.nix
     ./mini.nix
     ./neo-tree.nix
-    # ./telescope.nix
+    ./telescope.nix
     ./treesitter.nix
     ./which-key.nix
   ];

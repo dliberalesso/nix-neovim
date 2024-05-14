@@ -1,103 +1,59 @@
-{
-  plugins.telescope = {
-    enable = true;
-
-    extensions = {
-      fzf-native.enable = true;
-
-      ui-select = {
-        enable = true;
-        settings.specific_opts.codeactions = true;
-      };
-    };
-
-    keymaps = {
-      "<leader>sh" = {
-        action = "help_tags, {}";
-        options.desc = "[S]earch [H]elp";
-      };
-
-      "<leader>sk" = {
-        action = "keymaps, {}";
-        options.desc = "[S]earch [K]eymaps";
-      };
-
-      "<leader>sf" = {
-        action = "find_files, {}";
-        options.desc = "[S]earch [F]iles";
-      };
-
-      "<leader>ss" = {
-        action = "builtin, {}";
-        options.desc = "[S]earch [S]elect Telescope";
-      };
-
-      "<leader>sw" = {
-        action = "grep_string, {}";
-        options.desc = "[S]earch current [W]ord";
-      };
-
-      "<leader>sg" = {
-        action = "live_grep, {}";
-        options.desc = "[S]earch by [G]rep";
-      };
-
-      "<leader>sd" = {
-        action = "diagnostics, {}";
-        options.desc = "[S]earch [D]iagnostics";
-      };
-
-      "<leader>sr" = {
-        action = "resume, {}";
-        options.desc = "[S]earch [R]esume";
-      };
-
-      "<leader>s." = {
-        action = "oldfiles, {}";
-        options.desc = "[S]earch Recent Files ('.' for repeat)";
-      };
-
-      "<leader><leader>" = {
-        action = "buffers, {}";
-        options.desc = "[ ] Find existing buffers";
-      };
-    };
-  };
-
-  keymaps = [
-    # Fuzzily search in current buffer
+{ pkgs, ... }: {
+  plugins.lazy.plugins = with pkgs.vimPlugins; [
     {
-      mode = "n";
-      key = "<leader>/";
-      action = ''
-        function()
-          require('telescope.builtin')
-          .current_buffer_fuzzy_find(require('telescope.themes')
-          .get_dropdown {
-            winblend = 10,
-            previewer = false,
-          })
-        end
-      '';
-      lua = true;
-      options.desc = "[/] Fuzzily search in current buffer";
-    }
+      pkg = telescope-nvim;
 
-    # Search in Open Files
-    {
-      mode = "n";
-      key = "<leader>s/";
-      action = ''
-        function()
-          require('telescope.builtin')
-          .live_grep {
-            grep_open_files = true,
-            prompt_title = 'Live Grep in Open Files',
+      dependencies = [
+        plenary-nvim
+        telescope-fzf-native-nvim
+        telescope-ui-select-nvim
+        nvim-web-devicons
+      ];
+
+      config = /* lua */ ''
+        function(_, opts)
+          require("telescope").setup {
+            extensions = {
+              ["ui-select"] = {
+                require('telescope.themes').get_dropdown()
+              }
+            }
           }
+
+          pcall(require('telescope').load_extension, 'fzf')
+          pcall(require('telescope').load_extension, 'ui-select')
+
+          local builtin = require 'telescope.builtin'
+          vim.keymap.set('n', '<leader>sh', builtin.help_tags, { desc = '[S]earch [H]elp' })
+          vim.keymap.set('n', '<leader>sk', builtin.keymaps, { desc = '[S]earch [K]eymaps' })
+          vim.keymap.set('n', '<leader>sf', builtin.find_files, { desc = '[S]earch [F]iles' })
+          vim.keymap.set('n', '<leader>ss', builtin.builtin, { desc = '[S]earch [S]elect Telescope' })
+          vim.keymap.set('n', '<leader>sw', builtin.grep_string, { desc = '[S]earch current [W]ord' })
+          vim.keymap.set('n', '<leader>sg', builtin.live_grep, { desc = '[S]earch by [G]rep' })
+          vim.keymap.set('n', '<leader>sd', builtin.diagnostics, { desc = '[S]earch [D]iagnostics' })
+          vim.keymap.set('n', '<leader>sr', builtin.resume, { desc = '[S]earch [R]esume' })
+          vim.keymap.set('n', '<leader>s.', builtin.oldfiles, { desc = '[S]earch Recent Files ("." for repeat)' })
+          vim.keymap.set('n', '<leader><leader>', builtin.buffers, { desc = '[ ] Find existing buffers' })
+
+          vim.keymap.set('n', '<leader>/', function()
+            builtin.current_buffer_fuzzy_find(require('telescope.themes').get_dropdown {
+              winblend = 10,
+              previewer = false,
+            })
+          end, { desc = '[/] Fuzzily search in current buffer' })
+
+          vim.keymap.set('n', '<leader>s/', function()
+            builtin.live_grep {
+              grep_open_files = true,
+              prompt_title = 'Live Grep in Open Files',
+            }
+          end, { desc = '[S]earch [/] in Open Files' })
+
+          vim.keymap.set('n', '<leader>sn', function()
+            builtin.find_files { cwd = vim.fn.stdpath 'config' }
+          end, { desc = '[S]earch [N]eovim files' })
         end
       '';
-      lua = true;
-      options.desc = "[S]earch [/] in Open Files";
     }
   ];
 }

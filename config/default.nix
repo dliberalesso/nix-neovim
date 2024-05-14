@@ -9,7 +9,7 @@
 
   editorconfig.enable = true;
 
-  extraConfigVim = /* lua */ ''
+  extraConfigVim = /* vim */ ''
     aunmenu PopUp.How-to\ disable\ mouse
     aunmenu PopUp.-1-
   '';
