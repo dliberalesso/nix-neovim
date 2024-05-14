@@ -3,6 +3,7 @@
 
   imports = [
     ./catppuccin.nix
+    ./comment.nix
     ./git.nix
     ./incline.nix
     # ./lazygit.nix
@@ -15,7 +16,6 @@
   ];
 
   # plugins = {
-  #   comment.enable = true;
   #   indent-o-matic.enable = true;
   #   treesitter.enable = true;
   # };
