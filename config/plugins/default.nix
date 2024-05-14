@@ -10,7 +10,7 @@
     # ./lazygit.nix
     ./lualine.nix
     ./mini.nix
-    # ./nvim-tree.nix
+    ./neo-tree.nix
     # ./telescope.nix
     ./treesitter.nix
     ./which-key.nix
