@@ -90,6 +90,10 @@
           packages.default = nvim;
 
           devShells.default = pkgs.mkShell {
+            shellHook = ''
+              ${config.pre-commit.installationScript}
+            '';
+
             nativeBuildInputs = with pkgs; [
               nixd
             ];
