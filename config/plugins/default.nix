@@ -4,6 +4,7 @@
   imports = [
     ./catppuccin.nix
     ./comment.nix
+    ./guess-indent.nix
     ./git.nix
     ./incline.nix
     # ./lazygit.nix
