@@ -13,11 +13,6 @@
     # ./nvim-tree.nix
     # ./telescope.nix
     ./treesitter.nix
-    # ./which-key.nix
+    ./which-key.nix
   ];
-
-  # plugins = {
-  #   indent-o-matic.enable = true;
-  #   treesitter.enable = true;
-  # };
 }

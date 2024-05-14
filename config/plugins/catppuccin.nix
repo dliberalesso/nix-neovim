@@ -20,6 +20,7 @@
           gitsigns = true;
           mini.enabled = true;
           treesitter = true;
+          which_key = true;
         };
       };
     }
