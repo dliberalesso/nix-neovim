@@ -4,6 +4,8 @@
       # Set <space> as the leader key
       mapleader = " ";
       maplocalleader = " ";
+      
+      have_nerd_font = true;
     };
 
     opts = {
