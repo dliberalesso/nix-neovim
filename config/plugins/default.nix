@@ -7,7 +7,7 @@
     ./guess-indent.nix
     ./git.nix
     ./incline.nix
-    # ./lazygit.nix
+    ./lazygit.nix
     ./lualine.nix
     ./mini.nix
     ./neo-tree.nix

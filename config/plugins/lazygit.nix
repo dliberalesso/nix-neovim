@@ -1,19 +1,28 @@
-{ pkgs, ... }: {
-  extraPlugins = with pkgs.vimPlugins; [
-    lazygit-nvim
-  ];
-
-  extraConfigLua = ''
-    require("telescope").load_extension("lazygit")
-  '';
-
-  keymaps = [
+{ config, pkgs, ... }:
+let
+  inherit (config) utils;
+in
+{
+  plugins.lazy.plugins = with pkgs.vimPlugins; [
     {
-      mode = "n";
-      key = "<leader>gg";
-      action = "<cmd>LazyGit<CR>";
-      options = {
-        desc = "LazyGit (root dir)";
+      pkg = lazygit-nvim;
+
+      dependencies = [
+        plenary-nvim
+      ];
+
+      cmd = [
+        "LazyGit"
+        "LazyGitConfig"
+        "LazyGitCurrentFile"
+        "LazyGitFilter"
+        "LazyGitFilterCurrentFile"
+      ];
+
+      keys = {
+        __raw = ''
+          { { "<leader>gg", "<cmd>LazyGit<cr>", desc = "Lazy[G]it" } }
+        '';
       };
     }
   ];
