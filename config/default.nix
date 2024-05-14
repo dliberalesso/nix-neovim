@@ -1,4 +1,4 @@
-{pkgs, ...}: {
+{ pkgs, ... }: {
   imports = [
     ./disable_plugins.nix
     ./highlight_yank.nix

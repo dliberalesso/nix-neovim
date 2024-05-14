@@ -1,9 +1,9 @@
-{pkgs, ...}: {
+{ pkgs, ... }: {
   plugins.lazy.plugins = with pkgs.vimPlugins; [
     {
       pkg = gitsigns-nvim;
 
-      event = ["BufReadPre" "BufNewFile"];
+      event = [ "BufReadPre" "BufNewFile" ];
 
       config = true;
     }

@@ -4,7 +4,7 @@
       # Set <space> as the leader key
       mapleader = " ";
       maplocalleader = " ";
-      
+
       have_nerd_font = true;
     };
 
@@ -66,9 +66,9 @@
       # Better undo history
       swapfile = false;
       backup = false;
-      undodir = {__raw = "os.getenv('HOME') .. '/.cache/nvim/undodir'";};
+      undodir = { __raw = "os.getenv('HOME') .. '/.cache/nvim/undodir'"; };
       undofile = true;
-      shada = ["'10" "<0" "s10" "h"];
+      shada = [ "'10" "<0" "s10" "h" ];
 
       # Decrease update time
       updatetime = 250;

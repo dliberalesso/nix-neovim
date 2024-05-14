@@ -28,6 +28,9 @@
     pre-commit-hooks.inputs.nixpkgs-stable.follows = "nixpkgs";
     pre-commit-hooks.inputs.flake-compat.follows = "flake-compat";
 
+    treefmt-nix.url = "github:numtide/treefmt-nix";
+    treefmt-nix.inputs.nixpkgs.follows = "nixpkgs";
+
     nixvim.url = "github:nix-community/nixvim";
     nixvim.inputs.nixpkgs.follows = "nixpkgs";
     nixvim.inputs.flake-compat.follows = "flake-compat";
@@ -35,53 +38,61 @@
     nixvim.inputs.pre-commit-hooks.follows = "pre-commit-hooks";
   };
 
-  outputs = {
-    nixpkgs,
-    flake-parts,
-    nixvim,
-    ...
-  } @ inputs:
-    flake-parts.lib.mkFlake {inherit inputs;} {
+  outputs =
+    { nixpkgs
+    , flake-parts
+    , nixvim
+    , ...
+    } @ inputs:
+    flake-parts.lib.mkFlake { inherit inputs; } {
       imports = [
         inputs.pre-commit-hooks.flakeModule
+        inputs.treefmt-nix.flakeModule
       ];
 
       systems = nixpkgs.lib.systems.flakeExposed;
 
-      perSystem = {
-        pkgs,
-        system,
-        ...
-      }: let
-        nixvim' = nixvim.legacyPackages.${system};
-        nvim = nixvim'.makeNixvimWithModule {
-          inherit pkgs;
-          module = import ./config;
-        };
-      in {
-        pre-commit.check.enable = true;
-        pre-commit.settings.hooks = {
-          alejandra.enable = true;
-        };
+      perSystem =
+        { config
+        , pkgs
+        , system
+        , ...
+        }:
+        let
+          nixvim' = nixvim.legacyPackages.${system};
+          nvim = nixvim'.makeNixvimWithModule {
+            inherit pkgs;
+            module = import ./config;
+          };
+        in
+        {
+          treefmt = {
+            projectRootFile = "flake.nix";
+            programs = {
+              nixpkgs-fmt.enable = true;
+            };
+          };
 
-        # Run `nix flake check .` to verify that your config is not broken
-        checks.default = nixvim.lib.${system}.check.mkTestDerivationFromNvim {
-          inherit nvim;
-          name = "My Neovim config";
+          pre-commit.check.enable = true;
+          pre-commit.settings.hooks = {
+            treefmt.enable = true;
+            treefmt.package = config.treefmt.build.wrapper;
+          };
+
+          # Run `nix flake check .` to verify that your config is not broken
+          checks.default = nixvim.lib.${system}.check.mkTestDerivationFromNvim {
+            inherit nvim;
+            name = "My Neovim config";
+          };
+
+          # Lets you run `nix run .` to start nixvim
+          packages.default = nvim;
+
+          devShells.default = pkgs.mkShell {
+            nativeBuildInputs = with pkgs; [
+              nvim
+            ];
+          };
         };
-
-        # Run `nix fmt` to format the entire code base
-        formatter = pkgs.alejandra;
-
-        # Lets you run `nix run .` to start nixvim
-        packages.default = nvim;
-
-        devShells.default = pkgs.mkShell {
-          nativeBuildInputs = with pkgs; [
-            alejandra
-            nvim
-          ];
-        };
-      };
     };
 }

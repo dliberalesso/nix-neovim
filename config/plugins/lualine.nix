@@ -1,4 +1,4 @@
-{pkgs, ...}: {
+{ pkgs, ... }: {
   plugins.lazy.plugins = with pkgs.vimPlugins; [
     {
       pkg = lualine-nvim;

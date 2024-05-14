@@ -1,21 +1,23 @@
-{pkgs, ...}: let
+{ pkgs, ... }:
+let
   allParsers = with pkgs.vimPlugins;
     builtins.filter
-    (p: p.pkg ? type && p.pkg.type == "derivation")
-    (builtins.map
-      (name: {
-        pkg = nvim-treesitter-parsers.${name};
-        ft = [name];
-      })
-      (builtins.attrNames nvim-treesitter-parsers));
-in {
+      (p: p.pkg ? type && p.pkg.type == "derivation")
+      (builtins.map
+        (name: {
+          pkg = nvim-treesitter-parsers.${name};
+          ft = [ name ];
+        })
+        (builtins.attrNames nvim-treesitter-parsers));
+in
+{
   plugins.lazy.plugins = with pkgs.vimPlugins;
     allParsers
     ++ [
       {
         pkg = nvim-treesitter;
 
-        event = ["BufReadPost" "BufNewFile"];
+        event = [ "BufReadPost" "BufNewFile" ];
 
         dependencies = [
           nvim-treesitter-textobjects
