@@ -80,18 +80,18 @@
             treefmt.package = config.treefmt.build.wrapper;
           };
 
-          # Run `nix flake check .` to verify that your config is not broken
+          # Run `nix flake check` to verify that your config is not broken
           checks.default = nixvim.lib.${system}.check.mkTestDerivationFromNvim {
             inherit nvim;
             name = "My Neovim config";
           };
 
-          # Lets you run `nix run .` to start nixvim
+          # Run `nix run` to start nvim
           packages.default = nvim;
 
           devShells.default = pkgs.mkShell {
             nativeBuildInputs = with pkgs; [
-              nvim
+              nixd
             ];
           };
         };
