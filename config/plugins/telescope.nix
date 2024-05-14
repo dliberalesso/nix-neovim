@@ -48,10 +48,6 @@
               prompt_title = 'Live Grep in Open Files',
             }
           end, { desc = '[S]earch [/] in Open Files' })
-
-          vim.keymap.set('n', '<leader>sn', function()
-            builtin.find_files { cwd = vim.fn.stdpath 'config' }
-          end, { desc = '[S]earch [N]eovim files' })
         end
       '';
     }
