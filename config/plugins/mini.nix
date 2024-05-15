@@ -8,7 +8,7 @@
         , opts ? { }
         }: {
           pkg = mini-nvim;
-          name = name;
+          inherit name;
           inherit event;
           inherit dependencies;
           config = true;
@@ -17,7 +17,17 @@
         };
     in
     [
+      (mini-module {
+        name = "mini.ai";
+        opts.n_lines = 500;
+      })
+
       (mini-module { name = "mini.basics"; })
+
+      (mini-module {
+        name = "mini.comment";
+        event = [ "BufReadPre" "BufNewFile" ];
+      })
 
       (mini-module {
         name = "mini.diff";
@@ -38,6 +48,8 @@
         dependencies = [ nvim-web-devicons ];
         opts.set_vim_settings = false;
       })
+
+      (mini-module { name = "mini.surround"; })
 
       (mini-module {
         name = "mini.trailspace";
