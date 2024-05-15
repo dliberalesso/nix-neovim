@@ -12,6 +12,7 @@
     ./mini.nix
     ./neo-tree.nix
     ./telescope.nix
+    ./todo-comments.nix
     ./treesitter.nix
     ./which-key.nix
   ];
