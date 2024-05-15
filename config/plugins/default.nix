@@ -5,7 +5,7 @@
     ./catppuccin.nix
     ./comment.nix
     ./guess-indent.nix
-    ./git.nix
+    # ./gitsigns.nix
     ./incline.nix
     ./lazygit.nix
     # ./lualine.nix

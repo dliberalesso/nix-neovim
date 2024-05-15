@@ -19,6 +19,12 @@
     [
       (mini-module { name = "mini.basics"; })
 
+      (mini-module {
+        name = "mini.diff";
+        event = [ "BufReadPre" "BufNewFile" ];
+        opts.view.style = "sign";
+      })
+
       # (mini-module {name = "mini.extra";})
 
       (mini-module {
