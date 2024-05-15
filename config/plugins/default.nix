@@ -8,7 +8,7 @@
     ./git.nix
     ./incline.nix
     ./lazygit.nix
-    ./lualine.nix
+    # ./lualine.nix
     ./mini.nix
     ./neo-tree.nix
     ./telescope.nix

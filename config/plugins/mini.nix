@@ -1,16 +1,19 @@
 { pkgs, ... }: {
-  plugins.lazy.plugins =
+  plugins.lazy.plugins = with pkgs.vimPlugins;
     let
       mini-module =
         { name
         , event ? [ ]
-        ,
+        , dependencies ? [ ]
+        , opts ? { }
         }: {
-          pkg = pkgs.vimPlugins.mini-nvim;
+          pkg = mini-nvim;
           name = name;
-          event = event;
+          inherit event;
+          inherit dependencies;
           config = true;
           main = name;
+          inherit opts;
         };
     in
     [
@@ -21,6 +24,13 @@
       (mini-module {
         name = "mini.indentscope";
         event = "VeryLazy";
+      })
+
+      (mini-module {
+        name = "mini.statusline";
+        event = "VeryLazy";
+        dependencies = [ nvim-web-devicons ];
+        opts.set_vim_settings = false;
       })
 
       (mini-module {
