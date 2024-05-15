@@ -1,8 +1,8 @@
-{ pkgs, ... }: {
+{
   plugins.lazy.enable = true;
 
   imports = [
-    ./catppuccin.nix
+    ./colorscheme
     ./comment.nix
     ./guess-indent.nix
     # ./gitsigns.nix

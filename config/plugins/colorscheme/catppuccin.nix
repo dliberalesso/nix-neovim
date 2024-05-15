@@ -6,13 +6,13 @@
       lazy = false;
       priority = 1000;
 
-      config = /* lua */ ''
-        function(_, opts)
-          require("catppuccin").setup(opts)
-
-          vim.cmd.colorscheme("catppuccin")
-        end
-      '';
+      config = true;
+      main = "catppuccin";
+      # config = /* lua */ ''
+      #   function(_, opts)
+      #     require("catppuccin").setup(opts)
+      #   end
+      # '';
 
       opts = {
         flavour = "mocha";
