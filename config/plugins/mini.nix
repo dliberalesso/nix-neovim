@@ -19,7 +19,13 @@
     [
       (mini-module {
         name = "mini.ai";
+        event = [ "BufReadPre" "BufNewFile" ];
         opts.n_lines = 500;
+      })
+
+      (mini-module {
+        name = "mini.align";
+        event = [ "BufReadPre" "BufNewFile" ];
       })
 
       (mini-module { name = "mini.basics"; })
@@ -39,7 +45,7 @@
 
       (mini-module {
         name = "mini.indentscope";
-        event = "VeryLazy";
+        event = [ "BufReadPre" "BufNewFile" ];
       })
 
       (mini-module {
@@ -49,11 +55,14 @@
         opts.set_vim_settings = false;
       })
 
-      (mini-module { name = "mini.surround"; })
+      (mini-module {
+        name = "mini.surround";
+        event = [ "BufReadPre" "BufNewFile" ];
+      })
 
       (mini-module {
         name = "mini.trailspace";
-        event = "VeryLazy";
+        event = [ "BufReadPre" "BufNewFile" ];
       })
     ];
 }
