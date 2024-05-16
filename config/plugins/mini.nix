@@ -3,7 +3,7 @@
     let
       mini-module =
         { name
-        , event ? [ ]
+        , event ? [ "BufReadPre" "BufNewFile" ]
         , dependencies ? [ ]
         , opts ? { }
         }: {
@@ -19,34 +19,26 @@
     [
       (mini-module {
         name = "mini.ai";
-        event = [ "BufReadPre" "BufNewFile" ];
         opts.n_lines = 500;
       })
 
-      (mini-module {
-        name = "mini.align";
-        event = [ "BufReadPre" "BufNewFile" ];
-      })
-
-      (mini-module { name = "mini.basics"; })
+      (mini-module { name = "mini.align"; })
 
       (mini-module {
-        name = "mini.comment";
-        event = [ "BufReadPre" "BufNewFile" ];
+        name = "mini.basics";
+        event = [ ];
       })
+
+      (mini-module { name = "mini.comment"; })
 
       (mini-module {
         name = "mini.diff";
-        event = [ "BufReadPre" "BufNewFile" ];
         opts.view.style = "sign";
       })
 
       # (mini-module {name = "mini.extra";})
 
-      (mini-module {
-        name = "mini.indentscope";
-        event = [ "BufReadPre" "BufNewFile" ];
-      })
+      (mini-module { name = "mini.indentscope"; })
 
       (mini-module {
         name = "mini.statusline";
@@ -55,14 +47,8 @@
         opts.set_vim_settings = false;
       })
 
-      (mini-module {
-        name = "mini.surround";
-        event = [ "BufReadPre" "BufNewFile" ];
-      })
+      (mini-module { name = "mini.surround"; })
 
-      (mini-module {
-        name = "mini.trailspace";
-        event = [ "BufReadPre" "BufNewFile" ];
-      })
+      (mini-module { name = "mini.trailspace"; })
     ];
 }
