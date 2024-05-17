@@ -69,6 +69,7 @@
           treefmt = {
             projectRootFile = "flake.nix";
             programs = {
+              prettier.enable = true;
               nixpkgs-fmt.enable = true;
               stylua.enable = true;
             };

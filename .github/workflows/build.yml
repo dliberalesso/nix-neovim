@@ -14,7 +14,7 @@ on:
       - "README.md"
       - ".editorconfig"
       - ".gitattributes"
-      - ".gitignore"    
+      - ".gitignore"
 
   workflow_dispatch:
 
