@@ -40,6 +40,8 @@
 
       (mini-module { name = "mini.indentscope"; })
 
+      (mini-module { name = "mini.pairs"; })
+
       (mini-module {
         name = "mini.statusline";
         event = "VeryLazy";
