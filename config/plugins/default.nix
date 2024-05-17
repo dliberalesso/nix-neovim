@@ -11,6 +11,7 @@
     ./telescope.nix
     ./todo-comments.nix
     ./treesitter.nix
+    ./vim-just.nix
     ./which-key.nix
   ];
 }
