@@ -27,6 +27,11 @@
 
     flake-root.url = "github:srid/flake-root";
 
+    gen-luarc = {
+      url = "github:mrcjkb/nix-gen-luarc-json";
+      inputs.flake-parts.follows = "flake-parts";
+    };
+
     git-hooks = {
       url = "github:cachix/git-hooks.nix";
       inputs = {
@@ -42,6 +47,7 @@
         nixpkgs.follows = "nixpkgs";
         flake-compat.follows = "flake-compat";
         flake-parts.follows = "flake-parts";
+        git-hooks.follows = "git-hooks";
       };
     };
 
@@ -51,59 +57,89 @@
     };
   };
 
-  outputs = inputs@{ flake-parts, ... }:
-    flake-parts.lib.mkFlake { inherit inputs; } {
-      imports = [
-        inputs.flake-root.flakeModule
-        inputs.git-hooks.flakeModule
-        inputs.treefmt-nix.flakeModule
+  outputs = inputs:
+    inputs.flake-parts.lib.mkFlake { inherit inputs; } {
+      imports = with inputs; [
+        flake-parts.flakeModules.easyOverlay
+        flake-root.flakeModule
+        git-hooks.flakeModule
+        treefmt-nix.flakeModule
       ];
 
-      systems = [ "x86_64-linux" "aarch64-linux" "aarch64-darwin" "x86_64-darwin" ];
+      systems = [ "x86_64-linux" "aarch64-linux" ];
 
-      perSystem = { config, system, ... }:
+      perSystem = { config, lib, system, ... }:
         let
+          genLuarcOverlay = inputs.gen-luarc.overlays.default;
           nightlyNeovimOverlay = inputs.neovim-nightly.overlays.default;
-
-          myNeovimOverlay = _: final: {
-            myNeovim = import ./packages/my-neovim.nix {
-              pkgs = final;
-            };
-          };
 
           pkgs = import inputs.nixpkgs {
             inherit system;
-            overlays = [ nightlyNeovimOverlay myNeovimOverlay ];
+            overlays = [ nightlyNeovimOverlay genLuarcOverlay ];
           };
         in
         {
-
           devShells.default = pkgs.mkShell {
             nativeBuildInputs = [
               pkgs.just
             ];
-
-            packages = [
-              # Formatters
-              pkgs.prettierd
-
-              # Language Servers
-              pkgs.lua-language-server
-              pkgs.marksman
-              pkgs.nixd
-              pkgs.vscode-langservers-extracted
-              pkgs.yaml-language-server
-
-              # Linters/Static analyzers
-              pkgs.selene
-            ] ++ builtins.attrValues config.treefmt.build.programs;
 
             shellHook = ''
               ${config.pre-commit.installationScript}
             '';
           };
 
-          packages.default = pkgs.myNeovim;
+          packages = rec {
+            neovim =
+              let
+                runtimeDeps = [
+                  # Formatters
+                  pkgs.prettierd
+
+                  # Language Servers
+                  pkgs.lua-language-server
+                  pkgs.marksman
+                  pkgs.nixd
+                  pkgs.vscode-langservers-extracted
+                  pkgs.yaml-language-server
+
+                  # Linters/Static analyzers
+                  pkgs.selene
+                ] ++ builtins.attrValues config.treefmt.build.programs;
+              in
+              pkgs.wrapNeovimUnstable pkgs.neovim (
+                pkgs.neovimUtils.makeNeovimConfig
+                  {
+                    customRC = ''
+                      set runtimepath^=${./.}/nvim
+                      source ${./.}/nvim/init.lua
+                    '';
+
+                    plugins = [
+                      # pkgs.vimPlugins.lz-n
+                      {
+                        plugin = pkgs.vimPlugins.telescope-nvim;
+                        type = "lua";
+                        optional = true;
+                      }
+                      {
+                        plugin = pkgs.vimPlugins.vim-startuptime;
+                        type = "lua";
+                        optional = true;
+                      }
+                    ];
+                  } // {
+                  wrapperArgs = [
+                    "--prefix"
+                    "PATH"
+                    ":"
+                    "${lib.makeBinPath runtimeDeps}"
+                  ];
+                }
+              );
+
+            default = neovim;
+          };
 
           pre-commit.check.enable = true;
           pre-commit.settings.hooks = {
