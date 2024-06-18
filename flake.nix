@@ -1,6 +1,4 @@
 {
-  description = "My Neovim config";
-
   nixConfig = {
     extra-substituters = [
       "https://cachix.cachix.org"
@@ -16,89 +14,108 @@
   };
 
   inputs = {
-    nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    nixpkgs.url = "github:NixOS/nixpkgs/nixos-unstable";
 
-    flake-compat.url = "github:edolstra/flake-compat";
-    flake-compat.flake = false;
+    flake-compat = {
+      url = "github:edolstra/flake-compat";
+      flake = false;
+    };
 
     flake-parts.url = "github:hercules-ci/flake-parts";
 
-    pre-commit-hooks.url = "github:cachix/pre-commit-hooks.nix";
-    pre-commit-hooks.inputs.nixpkgs.follows = "nixpkgs";
-    pre-commit-hooks.inputs.nixpkgs-stable.follows = "nixpkgs";
-    pre-commit-hooks.inputs.flake-compat.follows = "flake-compat";
+    flake-root.url = "github:srid/flake-root";
 
-    treefmt-nix.url = "github:numtide/treefmt-nix";
-    treefmt-nix.inputs.nixpkgs.follows = "nixpkgs";
+    git-hooks = {
+      url = "github:cachix/git-hooks.nix";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        nixpkgs-stable.follows = "nixpkgs";
+        flake-compat.follows = "flake-compat";
+      };
+    };
 
-    nixvim.url = "github:nix-community/nixvim";
-    nixvim.inputs.nixpkgs.follows = "nixpkgs";
-    nixvim.inputs.flake-compat.follows = "flake-compat";
-    nixvim.inputs.flake-parts.follows = "flake-parts";
-    nixvim.inputs.pre-commit-hooks.follows = "pre-commit-hooks";
+    neovim-nightly = {
+      url = "github:nix-community/neovim-nightly-overlay";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        flake-compat.follows = "flake-compat";
+        flake-parts.follows = "flake-parts";
+      };
+    };
+
+    treefmt-nix = {
+      url = "github:numtide/treefmt-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs =
-    { nixpkgs
-    , flake-parts
-    , nixvim
-    , ...
-    } @ inputs:
+  outputs = inputs@{ flake-parts, ... }:
     flake-parts.lib.mkFlake { inherit inputs; } {
       imports = [
-        inputs.pre-commit-hooks.flakeModule
+        inputs.flake-root.flakeModule
+        inputs.git-hooks.flakeModule
         inputs.treefmt-nix.flakeModule
       ];
 
-      systems = nixpkgs.lib.systems.flakeExposed;
+      systems = [ "x86_64-linux" "aarch64-linux" "aarch64-darwin" "x86_64-darwin" ];
 
-      perSystem =
-        { config
-        , pkgs
-        , system
-        , ...
-        }:
+      perSystem = { config, system, ... }:
         let
-          nixvim' = nixvim.legacyPackages.${system};
-          nvim = nixvim'.makeNixvimWithModule {
-            inherit pkgs;
-            module = import ./config;
+          neovimOverlay = inputs.neovim-nightly.overlays.default;
+
+          pkgs = import inputs.nixpkgs {
+            inherit system;
+            overlays = [ neovimOverlay ];
           };
         in
         {
-          treefmt = {
-            projectRootFile = "flake.nix";
-            programs = {
-              prettier.enable = true;
-              nixpkgs-fmt.enable = true;
-              stylua.enable = true;
-            };
-          };
-
-          pre-commit.check.enable = true;
-          pre-commit.settings.hooks = {
-            treefmt.enable = true;
-            treefmt.package = config.treefmt.build.wrapper;
-          };
-
-          # Run `nix flake check` to verify that your config is not broken
-          checks.default = nixvim.lib.${system}.check.mkTestDerivationFromNvim {
-            inherit nvim;
-            name = "My Neovim config";
-          };
-
-          # Run `nix run` to start nvim
-          packages.default = nvim;
 
           devShells.default = pkgs.mkShell {
+            nativeBuildInputs = [
+              pkgs.just
+            ];
+
+            packages = [
+              # Formatters
+              pkgs.prettierd
+
+              # Language Servers
+              pkgs.lua-language-server
+              pkgs.marksman
+              pkgs.nixd
+              pkgs.vscode-langservers-extracted
+              pkgs.yaml-language-server
+
+              # Linters/Static analyzers
+              pkgs.selene
+            ] ++ builtins.attrValues config.treefmt.build.programs;
+
             shellHook = ''
               ${config.pre-commit.installationScript}
             '';
+          };
 
-            nativeBuildInputs = with pkgs; [
-              nixd
-              nvim
-            ];
+          packages.default = pkgs.neovim;
+
+          pre-commit.check.enable = true;
+          pre-commit.settings.hooks = {
+            treefmt = {
+              enable = true;
+              package = config.treefmt.build.wrapper;
+            };
+          };
+
+          treefmt = {
+            inherit (config.flake-root) projectRootFile;
+            programs = {
+              deadnix.enable = true;
+              prettier.enable = true;
+              nixpkgs-fmt.enable = true;
+              shfmt.enable = true;
+              stylua.enable = true;
+              statix.enable = true;
+              taplo.enable = true;
+            };
           };
         };
     };
