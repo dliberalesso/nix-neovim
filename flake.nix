@@ -63,11 +63,17 @@
 
       perSystem = { config, system, ... }:
         let
-          neovimOverlay = inputs.neovim-nightly.overlays.default;
+          nightlyNeovimOverlay = inputs.neovim-nightly.overlays.default;
+
+          myNeovimOverlay = _: final: {
+            myNeovim = import ./packages/my-neovim.nix {
+              pkgs = final;
+            };
+          };
 
           pkgs = import inputs.nixpkgs {
             inherit system;
-            overlays = [ neovimOverlay ];
+            overlays = [ nightlyNeovimOverlay myNeovimOverlay ];
           };
         in
         {
@@ -97,7 +103,7 @@
             '';
           };
 
-          packages.default = pkgs.neovim;
+          packages.default = pkgs.myNeovim;
 
           pre-commit.check.enable = true;
           pre-commit.settings.hooks = {
