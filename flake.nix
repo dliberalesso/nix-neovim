@@ -1,4 +1,6 @@
 {
+  description = "My Neovim Flake";
+
   nixConfig = {
     extra-substituters = [
       "https://cachix.cachix.org"
