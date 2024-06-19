@@ -149,8 +149,9 @@
 
                     wrapRc = false;
 
-                    plugins = [
-                      pkgs.vimPlugins.lz-n
+                    plugins = with pkgs.vimPlugins; [
+                      catppuccin-nvim
+                      lz-n
                       {
                         plugin = pkgs.vimPlugins.telescope-nvim;
                         optional = true;
