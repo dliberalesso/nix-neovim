@@ -41,6 +41,27 @@
       };
     };
 
+    lz-n = {
+      url = "github:nvim-neorocks/lz.n";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        flake-parts.follows = "flake-parts";
+        gen-luarc.follows = "gen-luarc";
+        neorocks.follows = "neorocks";
+        pre-commit-hooks.follows = "git-hooks";
+      };
+    };
+
+    neorocks = {
+      url = "github:nvim-neorocks/neorocks";
+      inputs = {
+        flake-compat.follows = "flake-compat";
+        flake-parts.follows = "flake-parts";
+        git-hooks.follows = "git-hooks";
+        neovim-nightly.follows = "neovim-nightly";
+      };
+    };
+
     neovim-nightly = {
       url = "github:nix-community/neovim-nightly-overlay";
       inputs = {
@@ -71,12 +92,17 @@
       perSystem = { config, lib, system, ... }:
         let
           genLuarcOverlay = inputs.gen-luarc.overlays.default;
+          lznOverlay = inputs.lz-n.overlays.default;
           nightlyNeovimOverlay = inputs.neovim-nightly.overlays.default;
 
           pkgs = import inputs.nixpkgs {
             inherit system;
-            overlays = [ nightlyNeovimOverlay genLuarcOverlay ];
+            overlays = [ nightlyNeovimOverlay lznOverlay genLuarcOverlay ];
           };
+
+          patchedNeovim = pkgs.neovim.overrideAttrs (_old: {
+            patches = [ ./0001-NIX_ABS_PATH.patch ];
+          });
         in
         {
           devShells.default = pkgs.mkShell {
@@ -107,29 +133,38 @@
                   pkgs.selene
                 ] ++ builtins.attrValues config.treefmt.build.programs;
               in
-              pkgs.wrapNeovimUnstable pkgs.neovim (
+              pkgs.wrapNeovimUnstable patchedNeovim (
                 pkgs.neovimUtils.makeNeovimConfig
                   {
-                    customRC = ''
-                      set runtimepath^=${./.}/nvim
-                      source ${./.}/nvim/init.lua
-                    '';
+                    defaultEditor = true;
+
+                    viAlias = true;
+                    vimAlias = true;
+                    vimdiffAlias = true;
+
+                    withNodeJs = false;
+                    withPerl = false;
+                    withPython3 = false;
+                    withRuby = false;
+
+                    wrapRc = false;
 
                     plugins = [
-                      # pkgs.vimPlugins.lz-n
+                      pkgs.vimPlugins.lz-n
                       {
                         plugin = pkgs.vimPlugins.telescope-nvim;
-                        type = "lua";
                         optional = true;
                       }
                       {
                         plugin = pkgs.vimPlugins.vim-startuptime;
-                        type = "lua";
                         optional = true;
                       }
                     ];
                   } // {
                   wrapperArgs = [
+                    "--set"
+                    "NIX_ABS_CONFIG"
+                    "${./.}"
                     "--prefix"
                     "PATH"
                     ":"
