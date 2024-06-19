@@ -41,27 +41,6 @@
       };
     };
 
-    lz-n = {
-      url = "github:nvim-neorocks/lz.n";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        flake-parts.follows = "flake-parts";
-        gen-luarc.follows = "gen-luarc";
-        neorocks.follows = "neorocks";
-        pre-commit-hooks.follows = "git-hooks";
-      };
-    };
-
-    neorocks = {
-      url = "github:nvim-neorocks/neorocks";
-      inputs = {
-        flake-compat.follows = "flake-compat";
-        flake-parts.follows = "flake-parts";
-        git-hooks.follows = "git-hooks";
-        neovim-nightly.follows = "neovim-nightly";
-      };
-    };
-
     neovim-nightly = {
       url = "github:nix-community/neovim-nightly-overlay";
       inputs = {
@@ -81,7 +60,6 @@
   outputs = inputs:
     inputs.flake-parts.lib.mkFlake { inherit inputs; } {
       imports = with inputs; [
-        flake-parts.flakeModules.easyOverlay
         flake-root.flakeModule
         git-hooks.flakeModule
         treefmt-nix.flakeModule
@@ -89,15 +67,14 @@
 
       systems = [ "x86_64-linux" "aarch64-linux" ];
 
-      perSystem = { config, lib, system, ... }:
+      perSystem = { self', config, system, ... }:
         let
-          genLuarcOverlay = inputs.gen-luarc.overlays.default;
-          lznOverlay = inputs.lz-n.overlays.default;
-          nightlyNeovimOverlay = inputs.neovim-nightly.overlays.default;
-
           pkgs = import inputs.nixpkgs {
             inherit system;
-            overlays = [ nightlyNeovimOverlay lznOverlay genLuarcOverlay ];
+            overlays = [
+              inputs.gen-luarc.overlays.default
+              inputs.neovim-nightly.overlays.default
+            ];
           };
 
           patchedNeovim = pkgs.neovim.overrideAttrs (_old: {
@@ -110,69 +87,56 @@
               pkgs.just
             ];
 
+            packages = [
+              self'.packages.neovim
+
+              # Formatters
+              pkgs.prettierd
+
+              # Language Servers
+              pkgs.lua-language-server
+              pkgs.marksman
+              pkgs.nixd
+              pkgs.vscode-langservers-extracted
+              pkgs.yaml-language-server
+
+              # Linters/Static analyzers
+              pkgs.selene
+            ] ++ builtins.attrValues config.treefmt.build.programs;
+
             shellHook = ''
               ${config.pre-commit.installationScript}
             '';
           };
 
           packages = rec {
-            neovim =
-              let
-                runtimeDeps = [
-                  # Formatters
-                  pkgs.prettierd
+            neovim = pkgs.wrapNeovimUnstable patchedNeovim (
+              pkgs.neovimUtils.makeNeovimConfig
+                {
+                  defaultEditor = true;
 
-                  # Language Servers
-                  pkgs.lua-language-server
-                  pkgs.marksman
-                  pkgs.nixd
-                  pkgs.vscode-langservers-extracted
-                  pkgs.yaml-language-server
+                  viAlias = true;
+                  vimAlias = true;
+                  vimdiffAlias = true;
 
-                  # Linters/Static analyzers
-                  pkgs.selene
-                ] ++ builtins.attrValues config.treefmt.build.programs;
-              in
-              pkgs.wrapNeovimUnstable patchedNeovim (
-                pkgs.neovimUtils.makeNeovimConfig
-                  {
-                    defaultEditor = true;
+                  withNodeJs = false;
+                  withPerl = false;
+                  withPython3 = false;
+                  withRuby = false;
 
-                    viAlias = true;
-                    vimAlias = true;
-                    vimdiffAlias = true;
-
-                    withNodeJs = false;
-                    withPerl = false;
-                    withPython3 = false;
-                    withRuby = false;
-
-                    wrapRc = false;
-
-                    plugins = with pkgs.vimPlugins; [
-                      catppuccin-nvim
-                      lz-n
-                      {
-                        plugin = pkgs.vimPlugins.telescope-nvim;
-                        optional = true;
-                      }
-                      {
-                        plugin = pkgs.vimPlugins.vim-startuptime;
-                        optional = true;
-                      }
-                    ];
-                  } // {
-                  wrapperArgs = [
-                    "--set"
-                    "NIX_ABS_CONFIG"
-                    "${./.}"
-                    "--prefix"
-                    "PATH"
-                    ":"
-                    "${lib.makeBinPath runtimeDeps}"
-                  ];
-                }
-              );
+                  wrapRc = false;
+                } // {
+                wrapperArgs = [
+                  "--set"
+                  "NIX_ABS_CONFIG"
+                  "${./.}"
+                  "--set"
+                  "LAZY_ROOT_DIR"
+                  # TODO: look into how nixvim set this using `linkFarm`
+                  "/home/dli/.local/share/nvim/lazy/"
+                ];
+              }
+            );
 
             default = neovim;
           };

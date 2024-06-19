@@ -161,68 +161,6 @@
         "type": "github"
       }
     },
-    "lz-n": {
-      "inputs": {
-        "flake-parts": [
-          "flake-parts"
-        ],
-        "gen-luarc": [
-          "gen-luarc"
-        ],
-        "neorocks": [
-          "neorocks"
-        ],
-        "nixpkgs": [
-          "nixpkgs"
-        ],
-        "pre-commit-hooks": [
-          "git-hooks"
-        ]
-      },
-      "locked": {
-        "lastModified": 1718726812,
-        "narHash": "sha256-fXOGfcLQZNwxzTUCui2vk36BphkO7Mi8/F9Ea0D2qsE=",
-        "owner": "nvim-neorocks",
-        "repo": "lz.n",
-        "rev": "5368c55db04664755ffb6b39eab241bf63989f5e",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nvim-neorocks",
-        "repo": "lz.n",
-        "type": "github"
-      }
-    },
-    "neorocks": {
-      "inputs": {
-        "flake-compat": [
-          "flake-compat"
-        ],
-        "flake-parts": [
-          "flake-parts"
-        ],
-        "git-hooks": [
-          "git-hooks"
-        ],
-        "neovim-nightly": [
-          "neovim-nightly"
-        ],
-        "nixpkgs": "nixpkgs_2"
-      },
-      "locked": {
-        "lastModified": 1718774589,
-        "narHash": "sha256-Be4QDIKCtH6eoA1+T28qKue+GRm5ZhON0qLa2FMHSf8=",
-        "owner": "nvim-neorocks",
-        "repo": "neorocks",
-        "rev": "6dc3842d3a04f2045b2a047f34a3f01c0996c01b",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nvim-neorocks",
-        "repo": "neorocks",
-        "type": "github"
-      }
-    },
     "neovim-nightly": {
       "inputs": {
         "flake-compat": [
@@ -300,22 +238,6 @@
     },
     "nixpkgs_2": {
       "locked": {
-        "lastModified": 1718606988,
-        "narHash": "sha256-pmjP5ePc1jz+Okona3HxD7AYT0wbrCwm9bXAlj08nDM=",
-        "owner": "nixos",
-        "repo": "nixpkgs",
-        "rev": "38d3352a65ac9d621b0cd3074d3bef27199ff78f",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nixos",
-        "ref": "nixpkgs-unstable",
-        "repo": "nixpkgs",
-        "type": "github"
-      }
-    },
-    "nixpkgs_3": {
-      "locked": {
         "lastModified": 1718530797,
         "narHash": "sha256-pup6cYwtgvzDpvpSCFh1TEUjw2zkNpk8iolbKnyFmmU=",
         "owner": "NixOS",
@@ -337,10 +259,8 @@
         "flake-root": "flake-root",
         "gen-luarc": "gen-luarc",
         "git-hooks": "git-hooks",
-        "lz-n": "lz-n",
-        "neorocks": "neorocks",
         "neovim-nightly": "neovim-nightly",
-        "nixpkgs": "nixpkgs_3",
+        "nixpkgs": "nixpkgs_2",
         "treefmt-nix": "treefmt-nix"
       }
     },
