@@ -37,12 +37,18 @@ let
     diffview-nvim
     vim-startuptime
 
+    plenary-nvim
+    nvim-web-devicons
+    nui-nvim
+
     catppuccin-nvim
 
     treesitter
     nvim-treesitter-textobjects
     nvim-ts-autotag
     rainbow-delimiters-nvim
+
+    neo-tree-nvim
   ];
 
   extraPackages = [
