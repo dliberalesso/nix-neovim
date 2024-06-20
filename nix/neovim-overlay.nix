@@ -1,12 +1,28 @@
 # This overlay, when applied to nixpkgs, adds the final neovim derivation to nixpkgs.
 { treefmtPrograms }: final: _prev:
-with final.pkgs.lib; let
+let
   pkgs = final;
 
   # Use this to create a plugin from a flake input
 
   # This is the helper function that builds the Neovim derivation.
   mkNeovim = pkgs.callPackage ./mkNeovim.nix { };
+
+  # Treesitter
+  treesitter = pkgs.vimPlugins.nvim-treesitter.withAllGrammars.overrideAttrs (_:
+    let
+      treesitter-parser-paths =
+        pkgs.symlinkJoin {
+          name = "treesitter-parsers";
+          paths = treesitter.dependencies;
+        };
+    in
+    {
+      postPatch = ''
+        mkdir -p parser
+        cp -r ${treesitter-parser-paths.outPath}/parser/*.so parser
+      '';
+    });
 
   # A plugin can either be a package or an attrset, such as
   # { plugin = <plugin>; # the package, e.g. pkgs.vimPlugins.nvim-cmp
@@ -18,12 +34,18 @@ with final.pkgs.lib; let
   # }
   plugins = with pkgs.vimPlugins; [
     lazy-nvim
-    catppuccin-nvim
-    vim-startuptime
     diffview-nvim
+    vim-startuptime
+
+    catppuccin-nvim
+
+    treesitter
+    nvim-treesitter-textobjects
+    nvim-ts-autotag
+    rainbow-delimiters-nvim
   ];
 
-  extraPackages = with pkgs; [
+  extraPackages = [
     # Formatters
     pkgs.prettierd
 
