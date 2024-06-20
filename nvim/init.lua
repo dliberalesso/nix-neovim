@@ -4,27 +4,17 @@ vim.o.number = true
 vim.g.mapleader = " "
 vim.g.maplocalleader = ","
 
-local lazyroot = vim.env.LAZY_ROOT_DIR
-local lazypath = lazyroot .. "/lazy.nvim"
+vim.opt.rtp:prepend(vim.env.LAZY_ROOT_DIR .. "/lazy.nvim")
 
-vim.opt.rtp:prepend(lazypath)
-
-require("lazy").setup({
-  {
-    "dstein64/vim-startuptime",
-    -- lazy-load on a command
-    cmd = "StartupTime",
-    -- init is called during startup. Configuration for vim plugins typically should be set in an init function
-    init = function()
-      vim.g.startuptime_tries = 10
-    end,
-  },
-  { import = "plugins" },
-}, {
-  root = lazyroot,
+require("lazy").setup("plugins", {
   defaults = { lazy = true, version = false },
   local_spec = true, -- load project specific .lazy.lua, which will be added at the end of the spec.
   lockfile = vim.fn.stdpath("cache") .. "/lazy-lock.json",
+  dev = {
+    path = vim.env.LAZY_ROOT_DIR,
+    patterns = { "nix" },
+    fallback = false,
+  },
   install = {
     missing = false,
     colorscheme = { "catppuccin", "habamax" },

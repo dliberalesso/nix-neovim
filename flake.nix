@@ -69,17 +69,18 @@
 
       perSystem = { self', config, system, ... }:
         let
+          treefmtPrograms = builtins.attrValues config.treefmt.build.programs;
+
+          neovim-overlay = import ./nix/neovim-overlay.nix { inherit treefmtPrograms; };
+
           pkgs = import inputs.nixpkgs {
             inherit system;
             overlays = [
               inputs.gen-luarc.overlays.default
               inputs.neovim-nightly.overlays.default
+              neovim-overlay
             ];
           };
-
-          patchedNeovim = pkgs.neovim.overrideAttrs (_old: {
-            patches = [ ./0001-NIX_ABS_PATH.patch ];
-          });
         in
         {
           devShells.default = pkgs.mkShell {
@@ -88,57 +89,21 @@
             ];
 
             packages = [
-              self'.packages.neovim
-
-              # Formatters
-              pkgs.prettierd
-
-              # Language Servers
-              pkgs.lua-language-server
-              pkgs.marksman
-              pkgs.nixd
-              pkgs.vscode-langservers-extracted
-              pkgs.yaml-language-server
-
-              # Linters/Static analyzers
-              pkgs.selene
-            ] ++ builtins.attrValues config.treefmt.build.programs;
+              self'.packages.nvim-dev
+            ];
 
             shellHook = ''
               ${config.pre-commit.installationScript}
+              # symlink the .luarc.json generated in the overlay
+              ln -fs ${pkgs.nvim-luarc-json} .luarc.json
+              export NIX_ABS_CONFIG="$PWD"
             '';
           };
 
           packages = rec {
-            neovim = pkgs.wrapNeovimUnstable patchedNeovim (
-              pkgs.neovimUtils.makeNeovimConfig
-                {
-                  defaultEditor = true;
-
-                  viAlias = true;
-                  vimAlias = true;
-                  vimdiffAlias = true;
-
-                  withNodeJs = false;
-                  withPerl = false;
-                  withPython3 = false;
-                  withRuby = false;
-
-                  wrapRc = false;
-                } // {
-                wrapperArgs = [
-                  "--set"
-                  "NIX_ABS_CONFIG"
-                  "${./.}"
-                  "--set"
-                  "LAZY_ROOT_DIR"
-                  # TODO: look into how nixvim set this using `linkFarm`
-                  "/home/dli/.local/share/nvim/lazy/"
-                ];
-              }
-            );
-
-            default = neovim;
+            default = nvim;
+            nvim = pkgs.nvim-pkg;
+            nvim-dev = pkgs.nvim-pkg-dev;
           };
 
           pre-commit.check.enable = true;
