@@ -49,6 +49,9 @@ let
     rainbow-delimiters-nvim
 
     neo-tree-nvim
+
+    telescope-nvim
+    telescope-fzf-native-nvim
   ];
 
   extraPackages = [
