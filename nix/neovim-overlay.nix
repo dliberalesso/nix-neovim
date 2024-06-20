@@ -52,6 +52,8 @@ let
 
     telescope-nvim
     telescope-fzf-native-nvim
+
+    which-key-nvim
   ];
 
   extraPackages = [
