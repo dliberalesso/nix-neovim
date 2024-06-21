@@ -4,11 +4,13 @@ local M = {}
 ---@param rest table
 ---@return LazySpec
 function M.core_spec(core_module, rest)
+  M.dir = M.dir or vim.fn.stdpath("config") --[[@as string]]
   local name = "core." .. core_module
+
   return vim.tbl_extend("force", {
     name = name,
     main = name,
-    dir = vim.fn.stdpath("config"), --[[@as string]]
+    dir = M.dir,
     config = true,
   }, rest)
 end
