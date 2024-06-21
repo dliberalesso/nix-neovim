@@ -1,7 +1,6 @@
 ---@type LazySpec
 return {
-  "catppuccin-nvim",
-  dev = true,
+  dir = vim.env.LAZY_ROOT_DIR .. "/catppuccin-nvim",
 
   lazy = false,
   priority = 1000,

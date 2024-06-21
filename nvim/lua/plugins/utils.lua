@@ -1,7 +1,7 @@
 ---@type LazySpec[]
 return {
   {
-    "nix/diffview.nvim",
+    dir = vim.env.LAZY_ROOT_DIR .. "/diffview.nvim",
 
     -- TODO: add a custom event like
     -- event = "User AstroFile",
@@ -23,7 +23,7 @@ return {
     },
   },
   {
-    "nix/vim-startuptime",
+    dir = vim.env.LAZY_ROOT_DIR .. "/vim-startuptime",
     cmd = "StartupTime",
     init = function()
       vim.g.startuptime_tries = 10

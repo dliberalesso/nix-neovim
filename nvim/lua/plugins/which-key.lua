@@ -1,6 +1,6 @@
 ---@type LazySpec
 return {
-  "nix/which-key.nvim",
+  dir = vim.env.LAZY_ROOT_DIR .. "/which-key.nvim",
 
   event = "VeryLazy",
 

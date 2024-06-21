@@ -1,12 +1,12 @@
 ---@type LazySpec
 return {
-  "nix/nvim-treesitter",
+  dir = vim.env.LAZY_ROOT_DIR .. "/nvim-treesitter",
   main = "nvim-treesitter.configs",
 
   dependencies = {
-    "nix/nvim-treesitter-textobjects",
-    "nix/nvim-ts-autotag",
-    "nix/rainbow-delimiters.nvim",
+    { dir = vim.env.LAZY_ROOT_DIR .. "/nvim-treesitter-textobjects" },
+    { dir = vim.env.LAZY_ROOT_DIR .. "/nvim-ts-autotag" },
+    { dir = vim.env.LAZY_ROOT_DIR .. "/rainbow-delimiters.nvim" },
   },
 
   -- TODO: add a custom event like

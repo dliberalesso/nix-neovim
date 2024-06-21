@@ -1,12 +1,12 @@
 ---@type LazySpec[]
 return {
   {
-    "nix/neo-tree.nvim",
+    dir = vim.env.LAZY_ROOT_DIR .. "/neo-tree.nvim",
 
     dependencies = {
-      "nix/plenary.nvim",
-      "nix/nvim-web-devicons",
-      "nix/nui.nvim",
+      { dir = vim.env.LAZY_ROOT_DIR .. "/plenary.nvim" },
+      { dir = vim.env.LAZY_ROOT_DIR .. "/nvim-web-devicons" },
+      { dir = vim.env.LAZY_ROOT_DIR .. "/nui.nvim" },
       -- "3rd/image.nvim",
     },
 

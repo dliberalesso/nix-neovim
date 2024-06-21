@@ -9,12 +9,12 @@ vim.opt.rtp:prepend(vim.env.LAZY_ROOT_DIR .. "/lazy.nvim")
 require("lazy").setup("plugins", {
   defaults = { lazy = true, version = false },
   local_spec = true, -- load project specific .lazy.lua, which will be added at the end of the spec.
-  lockfile = vim.fn.stdpath("cache") .. "/lazy-lock.json",
-  dev = {
-    path = vim.env.LAZY_ROOT_DIR,
-    patterns = { "nix" },
-    fallback = false,
-  },
+  lockfile = vim.fn.stdpath("state") .. "/lazy-lock.json",
+  -- dev = {
+  --   path = vim.env.LAZY_ROOT_DIR,
+  --   patterns = { "nix" },
+  --   fallback = false,
+  -- },
   install = {
     missing = false,
     colorscheme = { "catppuccin", "habamax" },

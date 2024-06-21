@@ -1,12 +1,12 @@
 ---@type LazySpec[]
 return {
   {
-    "nix/telescope.nvim",
+    dir = vim.env.LAZY_ROOT_DIR .. "/telescope.nvim",
 
     dependencies = {
-      "nix/plenary.nvim",
-      "nix/telescope-fzf-native.nvim",
-      "nix/nvim-treesitter",
+      { dir = vim.env.LAZY_ROOT_DIR .. "/plenary.nvim" },
+      { dir = vim.env.LAZY_ROOT_DIR .. "/telescope-fzf-native.nvim" },
+      { dir = vim.env.LAZY_ROOT_DIR .. "/nvim-treesitter" },
     },
 
     cmd = "Telescope",
