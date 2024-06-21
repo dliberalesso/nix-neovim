@@ -1,5 +1,43 @@
 ---@type LazySpec[]
 return {
+  require("core.utils").core_spec("mappings", {
+    opts = function(_, maps)
+      maps.n["<leader>e"] = {
+        function()
+          if vim.bo.filetype == "neo-tree" then
+            vim.cmd.wincmd("p")
+          else
+            require("neo-tree.command").execute({ reveal = true, source = "last" })
+          end
+        end,
+        desc = "Explorer",
+      }
+      maps.n["<leader>E"] = {
+        function()
+          require("neo-tree.command").execute({ action = "close" })
+        end,
+        desc = "which_key_ignore",
+      }
+      maps.n["<leader>fe"] = {
+        function()
+          require("neo-tree.command").execute({ reveal = true, source = "filesystem" })
+        end,
+        desc = "File Explorer",
+      }
+      maps.n["<leader>be"] = {
+        function()
+          require("neo-tree.command").execute({ reveal = true, source = "buffers" })
+        end,
+        desc = "Buffer Explorer",
+      }
+      maps.n["<leader>ge"] = {
+        function()
+          require("neo-tree.command").execute({ reveal = true, source = "git_status" })
+        end,
+        desc = "Git Explorer",
+      }
+    end,
+  }),
   {
     dir = vim.env.LAZY_ROOT_DIR .. "/neo-tree.nvim",
 
@@ -60,42 +98,4 @@ return {
       },
     },
   },
-  require("core.utils").core_spec("mappings", {
-    opts = function(_, maps)
-      maps.n["<leader>e"] = {
-        function()
-          if vim.bo.filetype == "neo-tree" then
-            vim.cmd.wincmd("p")
-          else
-            require("neo-tree.command").execute({ reveal = true, source = "last" })
-          end
-        end,
-        desc = "Explorer",
-      }
-      maps.n["<leader>E"] = {
-        function()
-          require("neo-tree.command").execute({ action = "close" })
-        end,
-        desc = "which_key_ignore",
-      }
-      maps.n["<leader>fe"] = {
-        function()
-          require("neo-tree.command").execute({ reveal = true, source = "filesystem" })
-        end,
-        desc = "File Explorer",
-      }
-      maps.n["<leader>be"] = {
-        function()
-          require("neo-tree.command").execute({ reveal = true, source = "buffers" })
-        end,
-        desc = "Buffer Explorer",
-      }
-      maps.n["<leader>ge"] = {
-        function()
-          require("neo-tree.command").execute({ reveal = true, source = "git_status" })
-        end,
-        desc = "Git Explorer",
-      }
-    end,
-  }),
 }

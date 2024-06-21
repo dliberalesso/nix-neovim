@@ -1,57 +1,5 @@
 ---@type LazySpec[]
 return {
-  {
-    dir = vim.env.LAZY_ROOT_DIR .. "/telescope.nvim",
-
-    dependencies = {
-      { dir = vim.env.LAZY_ROOT_DIR .. "/plenary.nvim" },
-      { dir = vim.env.LAZY_ROOT_DIR .. "/telescope-fzf-native.nvim" },
-      { dir = vim.env.LAZY_ROOT_DIR .. "/nvim-treesitter" },
-    },
-
-    cmd = "Telescope",
-
-    opts = function()
-      local actions = require("telescope.actions")
-      local selected_icon = "❯ "
-      return {
-        defaults = {
-          prompt_prefix = selected_icon,
-          selection_caret = selected_icon,
-          multi_icon = selected_icon,
-          path_display = { "truncate" },
-          sorting_strategy = "ascending",
-          layout_config = {
-            horizontal = { prompt_position = "top", preview_width = 0.55 },
-            vertical = { mirror = false },
-            width = 0.87,
-            height = 0.80,
-            preview_cutoff = 120,
-          },
-          mappings = {
-            i = {
-              ["<C-N>"] = actions.cycle_history_next,
-              ["<C-P>"] = actions.cycle_history_prev,
-              ["<C-J>"] = actions.move_selection_next,
-              ["<C-K>"] = actions.move_selection_previous,
-            },
-            n = { q = actions.close },
-          },
-        },
-        highlight = {
-          enable = true,
-          -- additional_vim_regex_highlighting = false,
-        },
-      }
-    end,
-
-    config = function(_, opts)
-      local telescope = require("telescope")
-      telescope.setup(opts)
-
-      telescope.load_extension("fzf")
-    end,
-  },
   require("core.utils").core_spec("mappings", {
     opts = function(_, maps)
       maps.n["<leader>gb"] = {
@@ -208,6 +156,58 @@ return {
       }
     end,
   }),
+  {
+    dir = vim.env.LAZY_ROOT_DIR .. "/telescope.nvim",
+
+    dependencies = {
+      { dir = vim.env.LAZY_ROOT_DIR .. "/plenary.nvim" },
+      { dir = vim.env.LAZY_ROOT_DIR .. "/telescope-fzf-native.nvim" },
+      { dir = vim.env.LAZY_ROOT_DIR .. "/nvim-treesitter" },
+    },
+
+    cmd = "Telescope",
+
+    opts = function()
+      local actions = require("telescope.actions")
+      local selected_icon = "❯ "
+      return {
+        defaults = {
+          prompt_prefix = selected_icon,
+          selection_caret = selected_icon,
+          multi_icon = selected_icon,
+          path_display = { "truncate" },
+          sorting_strategy = "ascending",
+          layout_config = {
+            horizontal = { prompt_position = "top", preview_width = 0.55 },
+            vertical = { mirror = false },
+            width = 0.87,
+            height = 0.80,
+            preview_cutoff = 120,
+          },
+          mappings = {
+            i = {
+              ["<C-N>"] = actions.cycle_history_next,
+              ["<C-P>"] = actions.cycle_history_prev,
+              ["<C-J>"] = actions.move_selection_next,
+              ["<C-K>"] = actions.move_selection_previous,
+            },
+            n = { q = actions.close },
+          },
+        },
+        highlight = {
+          enable = true,
+          -- additional_vim_regex_highlighting = false,
+        },
+      }
+    end,
+
+    config = function(_, opts)
+      local telescope = require("telescope")
+      telescope.setup(opts)
+
+      telescope.load_extension("fzf")
+    end,
+  },
   -- {
   --   "AstroNvim/astrolsp",
   --   optional = true,
