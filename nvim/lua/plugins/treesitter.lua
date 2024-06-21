@@ -13,19 +13,6 @@ return {
   -- event = "User AstroFile",
   event = { "BufReadPost", "BufNewFile" },
 
-  cmd = {
-    "TSBufDisable",
-    "TSBufEnable",
-    "TSBufToggle",
-    "TSDisable",
-    "TSEditQuery",
-    "TSEditQueryUserAfter",
-    "TSEnable",
-    "TSInstallInfo",
-    "TSModuleInfo",
-    "TSToggle",
-  },
-
   init = function(plugin)
     -- PERF: add nvim-treesitter queries to the rtp and it's custom query predicates early
     require("lazy.core.loader").add_to_rtp(plugin)
