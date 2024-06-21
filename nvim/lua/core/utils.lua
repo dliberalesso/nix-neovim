@@ -15,6 +15,24 @@ function M.core_spec(core_module, rest)
   }, rest)
 end
 
+-- A helper function to wrap a module function to require a plugin before running
+---@param plugin string The plugin to call `require("lazy").load` with
+---@param module table The system module where the functions live (e.g. `vim.ui`)
+---@param funcs string|string[] The functions to wrap in the given module (e.g. `"ui", "select"`)
+function M.load_plugin_with_func(plugin, module, funcs)
+  if type(funcs) == "string" then
+    funcs = { funcs }
+  end
+  for _, func in ipairs(funcs) do
+    local old_func = module[func]
+    module[func] = function(...)
+      module[func] = old_func
+      require("lazy").load({ plugins = { plugin } })
+      module[func](...)
+    end
+  end
+end
+
 -- Get an empty table of mappings with a key for each map mode
 ---@return table<string,table> # a table with entries for each map mode
 function M.empty_map_table()
