@@ -167,10 +167,13 @@ return {
 
     cmd = "Telescope",
 
-    opts = function()
+    config = function()
+      local telescope = require("telescope")
       local actions = require("telescope.actions")
+
       local selected_icon = "❯ "
-      return {
+
+      telescope.setup({
         defaults = {
           prompt_prefix = selected_icon,
           selection_caret = selected_icon,
@@ -194,16 +197,8 @@ return {
             n = { q = actions.close },
           },
         },
-        highlight = {
-          enable = true,
-          -- additional_vim_regex_highlighting = false,
-        },
-      }
-    end,
-
-    config = function(_, opts)
-      local telescope = require("telescope")
-      telescope.setup(opts)
+        highlight = { enable = true },
+      })
 
       telescope.load_extension("fzf")
     end,

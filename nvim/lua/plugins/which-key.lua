@@ -6,7 +6,14 @@ return {
 
   config = function(_, opts)
     local wk = require("which-key")
-    wk.setup(opts)
+
+    wk.setup({
+      icons = {
+        group = "",
+        separator = "-",
+      },
+      disable = { filetypes = { "TelescopePrompt" } },
+    })
 
     wk.register({
       f = { name = "File" },
@@ -16,12 +23,4 @@ return {
       p = { name = "Packages" },
     }, { prefix = "<leader>" })
   end,
-
-  opts = {
-    icons = {
-      group = "",
-      separator = "-",
-    },
-    disable = { filetypes = { "TelescopePrompt" } },
-  },
 }
