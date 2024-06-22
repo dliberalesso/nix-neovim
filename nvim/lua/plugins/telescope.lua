@@ -127,9 +127,7 @@ return {
       maps.n["<leader>fW"] = {
         function()
           require("telescope.builtin").live_grep({
-            additional_args = function(args)
-              return vim.list_extend(args, { "--hidden", "--no-ignore" })
-            end,
+            additional_args = { "--hidden", "--no-ignore" },
           })
         end,
         desc = "Find words in all files",
