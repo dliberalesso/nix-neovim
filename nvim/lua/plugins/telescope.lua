@@ -20,7 +20,7 @@ return {
         end,
         desc = "Git commits (current file)",
       }
-      maps.n["<leader>gt"] = {
+      maps.n["<leader>gs"] = {
         function()
           require("telescope.builtin").git_status({ use_file_path = true })
         end,
@@ -131,16 +131,6 @@ return {
           })
         end,
         desc = "Find words in all files",
-      }
-      maps.n["<leader>fx"] = {
-        function()
-          require("telescope.builtin").find_files({
-            prompt_title = "Config Files",
-            cwd = vim.fn.stdpath("config"),
-            follow = true,
-          })
-        end,
-        desc = "Find Nvim config files",
       }
       maps.n["<leader>ls"] = {
         function()
