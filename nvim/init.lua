@@ -1,6 +1,6 @@
 vim.loader.enable()
 
-vim.o.number = true
+vim.opt.shada = ""
 vim.g.mapleader = " "
 vim.g.maplocalleader = ","
 
