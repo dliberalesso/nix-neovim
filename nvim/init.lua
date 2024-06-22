@@ -20,7 +20,6 @@ require("lazy").setup("plugins", {
     colorscheme = { "catppuccin", "habamax" },
   },
   ui = { backdrop = 100 },
-  diff = { cmd = "diffview.nvim" },
   performance = {
     rtp = {
       disabled_plugins = {

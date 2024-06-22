@@ -23,8 +23,6 @@ let
 
   plugins = with pkgs.vimPlugins; [
     lazy-nvim
-    diffview-nvim
-    vim-startuptime
 
     plenary-nvim
     nvim-web-devicons
