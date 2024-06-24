@@ -15,12 +15,19 @@ return {
       disable = { filetypes = { "TelescopePrompt" } },
     })
 
+    icons = require("core.icons")
+
     wk.register({
-      f = { name = "File" },
-      b = { name = "Buffer" },
-      g = { name = "Git" },
-      l = { name = "LSP" },
-      p = { name = "Packages" },
+      b = { name = icons.Tab .. " Buffers" },
+      bs = { name = icons.Sort .. " Sort Buffers" },
+      d = { name = icons.Debugger .. " Debugger" },
+      f = { name = icons.Search .. " Find" },
+      g = { name = icons.Git .. " Git" },
+      l = { name = icons.ActiveLSP .. " LSP" },
+      p = { name = icons.Package .. " Plugins" },
+      S = { name = icons.Session .. " Session" },
+      t = { name = icons.Terminal .. " Terminal" },
+      u = { name = icons.Window .. " UI/UX" },
     }, { prefix = "<leader>" })
   end,
 }

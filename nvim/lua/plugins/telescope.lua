@@ -159,7 +159,7 @@ return {
       local telescope = require("telescope")
       local actions = require("telescope.actions")
 
-      local selected_icon = "❯ "
+      local selected_icon = require("core.icons").Selected .. " "
 
       telescope.setup({
         defaults = {
