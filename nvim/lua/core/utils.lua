@@ -48,31 +48,6 @@ function M.empty_map_table()
   return maps
 end
 
--- Set a table of mappings.
----@param map_table table A nested table where the first key is the vim mode,
----                       the second key is the key to map, and the value is
----                       the function to set the mapping to.
----@param base? table A base set of options to set on every keybinding.
-function M.set_mappings(map_table, base)
-  -- iterate over the first keys for each mode
-  for mode, maps in pairs(map_table) do
-    -- iterate over each keybinding set in the current mode
-    for keymap, options in pairs(maps) do
-      -- build the options for the command accordingly
-      if options then
-        local cmd = options
-        local keymap_opts = base or {}
-        if type(options) == "table" then
-          cmd = options[1]
-          keymap_opts = vim.tbl_deep_extend("force", keymap_opts, options)
-          keymap_opts[1] = nil
-        end
-        vim.keymap.set(mode, keymap, cmd, keymap_opts)
-      end
-    end
-  end
-end
-
 -- Get a plugin spec from lazy
 ---@param plugin string The plugin to search for
 ---@return LazyPlugin? available # The found plugin spec from Lazy
@@ -87,6 +62,18 @@ end
 function M.plugin_opts(plugin)
   local spec = M.get_plugin(plugin)
   return spec and require("lazy.core.plugin").values(spec, "opts") or {}
+end
+
+-- Opens filepath or URI under cursor with the system handler (file explorer, web browser, …)
+---@param path string The path of the file to open with the system opener
+function M.system_open(path)
+  if not path then
+    path = vim.fn.expand("<cfile>")
+  elseif not path:match("%w+:") then
+    path = vim.fn.expand(path)
+  end
+
+  return vim.ui.open(path)
 end
 
 return M
