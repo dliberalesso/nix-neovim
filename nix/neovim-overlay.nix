@@ -146,5 +146,6 @@ in
   # This can be symlinked in the devShell's shellHook
   nvim-luarc-json = final.mk-luarc-json {
     inherit plugins;
+    nvim = neovim-unwrapped;
   };
 }
