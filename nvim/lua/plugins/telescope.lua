@@ -5,8 +5,9 @@ return {
 
     dependencies = {
       { dir = vim.env.LAZY_ROOT_DIR .. "/plenary.nvim" },
-      { dir = vim.env.LAZY_ROOT_DIR .. "/telescope-fzf-native.nvim" },
       { dir = vim.env.LAZY_ROOT_DIR .. "/nvim-treesitter" },
+      { dir = vim.env.LAZY_ROOT_DIR .. "/telescope-fzf-native.nvim" },
+      { dir = vim.env.LAZY_ROOT_DIR .. "/telescope-manix" },
       {
         dir = vim.env.LAZY_ROOT_DIR .. "/astrocore",
         opts = function(_, opts)
@@ -73,6 +74,22 @@ return {
               desc = "Find words in all files",
             }
           end
+          maps.n["<leader>fx"] = {
+            function()
+              local telescope = require("telescope")
+              telescope.load_extension("manix")
+              telescope.extensions.manix.manix()
+            end,
+            desc = "Find nix packages",
+          }
+          maps.n["<leader>fX"] = {
+            function()
+              local telescope = require("telescope")
+              telescope.load_extension("manix")
+              telescope.extensions.manix.manix({ cword = true })
+            end,
+            desc = "Find nix packages (current word)",
+          }
           maps.n["<Leader>lD"] =
             { function() require("telescope.builtin").diagnostics() end, desc = "Search diagnostics" }
           maps.n["<Leader>ls"] = {

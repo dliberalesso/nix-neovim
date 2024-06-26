@@ -99,6 +99,7 @@ let
 
     telescope-nvim
     telescope-fzf-native-nvim
+    telescope-manix
 
     todo-comments-nvim
     toggleterm-nvim
