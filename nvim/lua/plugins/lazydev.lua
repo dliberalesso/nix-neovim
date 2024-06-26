@@ -11,7 +11,6 @@ return {
         { path = "astroui", words = { "AstroUI" } },
         { path = "astrotheme", words = { "AstroTheme" } },
         { path = "lazy.nvim", words = { "Lazy" } },
-        -- { path = "nvim-notify", word = { "notify" } },
         { path = "catppuccin", word = { "Catppuccin" } },
       },
     },

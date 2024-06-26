@@ -12,25 +12,28 @@ return {
         semantic_tokens = true,
       },
       capabilities = vim.lsp.protocol.make_client_capabilities(),
-      ---@diagnostic disable-next-line: missing-fields
       config = {
         jsonls = {
           on_new_config = function(config)
             if not config.settings.json.schemas then config.settings.json.schemas = {} end
             vim.list_extend(config.settings.json.schemas, require("schemastore").json.schemas())
           end,
-          ---@diagnostic disable-next-line: missing-fields
           settings = { json = { validate = { enable = true } } },
         },
         lua_ls = {
           settings = {
-            ---@diagnostic disable-next-line: missing-fields
             Lua = {
-              ---@diagnostic disable-next-line: missing-fields
               format = { enable = false },
-              ---@diagnostic disable-next-line: missing-fields
+              globals = {
+                "vim",
+                "describe",
+                "it",
+                "assert",
+                "stub",
+              },
+              disable = { "duplicate-set-field" },
               hint = { enable = true, arrayIndex = "Disable" },
-              ---@diagnostic disable-next-line: missing-fields
+              runtime = { version = "LuaJIT" },
               workspace = { checkThirdParty = false },
             },
           },
@@ -40,7 +43,6 @@ return {
             if not config.settings.yaml.schemas then config.settings.yaml.schemas = {} end
             vim.list_extend(config.settings.yaml.schemas, require("schemastore").yaml.schemas())
           end,
-          ---@diagnostic disable-next-line: missing-fields
           settings = { yaml = { schemaStore = { enable = false, url = "" } } },
         },
       },
