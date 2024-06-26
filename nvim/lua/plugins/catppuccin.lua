@@ -1,38 +1,35 @@
 ---@type LazySpec
 return {
-  dir = vim.env.LAZY_ROOT_DIR .. "/catppuccin-nvim",
+  dir = vim.env.LAZY_ROOT_DIR .. "/catppuccin",
 
-  lazy = false,
-  priority = 1000,
-
-  config = function()
-    require("catppuccin").setup({
-      integrations = {
-        -- aerial = true,
-        -- alpha = true,
-        -- cmp = true,
-        -- dap = true,
-        -- dap_ui = true,
-        diffview = true,
-        -- gitsigns = true,
-        -- illuminate = true,
-        -- indent_blankline = true,
-        markdown = true,
-        -- mini = { enabled = true },
-        native_lsp = { enabled = true },
-        neotree = true,
-        notify = true,
-        rainbow_delimiters = true,
-        semantic_tokens = true,
-        symbols_outline = true,
-        telescope = true,
-        treesitter = true,
-        -- ufo = true,
-        which_key = true,
-        -- window_picker = true,
+  ---@type CatppuccinOptions
+  opts = {
+    integrations = {
+      aerial = true,
+      alpha = true,
+      cmp = true,
+      dap = true,
+      dap_ui = true,
+      gitsigns = true,
+      illuminate = true,
+      indent_blankline = true,
+      markdown = true,
+      mini = {
+        enabled = true,
+        indentscope_color = "mauve",
       },
-    })
-
-    vim.cmd.colorscheme("catppuccin")
-  end,
+      native_lsp = { enabled = true },
+      neotree = true,
+      notify = true,
+      rainbow_delimiters = true,
+      semantic_tokens = true,
+      symbols_outline = true,
+      telescope = true,
+      treesitter = true,
+      ts_rainbow = false,
+      ufo = true,
+      which_key = true,
+      window_picker = true,
+    },
+  },
 }

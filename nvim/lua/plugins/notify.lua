@@ -1,55 +1,50 @@
----@return LazySpec
 return {
   dir = vim.env.LAZY_ROOT_DIR .. "/nvim-notify",
 
   dependencies = {
     { dir = vim.env.LAZY_ROOT_DIR .. "/plenary.nvim" },
+    {
+      dir = vim.env.LAZY_ROOT_DIR .. "/astrocore",
+      opts = function(_, opts)
+        local maps = opts.mappings
+        maps.n["<Leader>uD"] = {
+          function() require("notify").dismiss({ pending = true, silent = true }) end,
+          desc = "Dismiss notifications",
+        }
+      end,
+    },
   },
 
-  init = function()
-    require("core.utils").load_plugin_with_func("nvim-notify", vim, "notify")
+  init = function() require("astrocore").load_plugin_with_func("nvim-notify", vim, "notify") end,
+
+  opts = function(_, opts)
+    local get_icon = require("astroui").get_icon
+    opts.icons = {
+      DEBUG = get_icon("Debugger"),
+      ERROR = get_icon("DiagnosticError"),
+      INFO = get_icon("DiagnosticInfo"),
+      TRACE = get_icon("DiagnosticHint"),
+      WARN = get_icon("DiagnosticWarn"),
+    }
+    opts.max_height = function() return math.floor(vim.o.lines * 0.75) end
+    opts.max_width = function() return math.floor(vim.o.columns * 0.75) end
+    opts.on_open = function(win)
+      local astrocore = require("astrocore")
+      vim.api.nvim_win_set_config(win, { zindex = 175 })
+      if not astrocore.config.features.notifications then
+        vim.api.nvim_win_close(win, true)
+        return
+      end
+      if astrocore.is_available("nvim-treesitter") then require("lazy").load({ plugins = { "nvim-treesitter" } }) end
+      vim.wo[win].conceallevel = 3
+      local buf = vim.api.nvim_win_get_buf(win)
+      if not pcall(vim.treesitter.start, buf, "markdown") then vim.bo[buf].syntax = "markdown" end
+      vim.wo[win].spell = false
+    end
   end,
-
-  config = function()
+  config = function(_, opts)
     local notify = require("notify")
-    local icons = require("core.icons")
-
-    notify.setup({
-      icons = {
-        DEBUG = icons.Debugger,
-        ERROR = icons.DiagnosticError,
-        INFO = icons.DiagnosticInfo,
-        TRACE = icons.DiagnosticHint,
-        WARN = icons.DiagnosticWarn,
-      },
-
-      max_height = function()
-        return math.floor(vim.o.lines * 0.75)
-      end,
-
-      max_width = function()
-        return math.floor(vim.o.columns * 0.75)
-      end,
-
-      on_open = function(win)
-        vim.api.nvim_win_set_config(win, { zindex = 175 })
-
-        require("lazy").load({ plugins = { "nvim-treesitter" } })
-
-        vim.wo[win].conceallevel = 3
-
-        local buf = vim.api.nvim_win_get_buf(win)
-
-        vim.treesitter.start(buf, "markdown")
-
-        vim.wo[win].spell = false
-      end,
-    })
-
-    vim.keymap.set("n", "<leader>uD", function()
-      require("notify").dismiss({ pending = true, silent = true })
-    end, { desc = "Dismiss notifications" })
-
-    require("core.notify").setup(notify)
+    notify.setup(opts)
+    require("utils.notify").setup(notify)
   end,
 }

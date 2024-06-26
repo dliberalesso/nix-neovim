@@ -11,28 +11,20 @@ local paused = false
 
 --- Check if notifications are paused
 ---@return boolean # whether or not the notifications are paused
-function M.is_paused()
-  return paused
-end
+function M.is_paused() return paused end
 
 --- Check now many notifications are pending
 ---@return table[] # the number of pending notifications
-function M.pending()
-  return notifications
-end
+function M.pending() return notifications end
 
 --- Pause notifications
-function M.pause()
-  paused = true
-end
+function M.pause() paused = true end
 
 --- Resume paused notifications
 function M.resume()
   paused = false
   vim.schedule(function()
-    vim.tbl_map(function(notif)
-      vim.notify(vim.F.unpack_len(notif))
-    end, notifications)
+    vim.tbl_map(function(notif) vim.notify(vim.F.unpack_len(notif)) end, notifications)
     notifications = {}
   end)
 end
@@ -45,15 +37,9 @@ end
 function M.notify(message, level, opts)
   if M.is_paused() then
     local pos = opts and opts.replace
-    if type(pos) == "table" and pos.id then
-      pos = pos.id
-    end
-    if type(pos) ~= "number" or not notifications[pos] then
-      pos = #notifications + 1
-    end
-    if opts then
-      opts.replace = nil
-    end
+    if type(pos) == "table" and pos.id then pos = pos.id end
+    if type(pos) ~= "number" or not notifications[pos] then pos = #notifications + 1 end
+    if opts then opts.replace = nil end
     notifications[pos] = vim.F.pack_len(message, level, opts)
     return { id = pos }
   else
@@ -62,9 +48,7 @@ function M.notify(message, level, opts)
 end
 
 function M.init()
-  if M.did_init then
-    return
-  end
+  if M.did_init then return end
 
   M.did_init = true
 
@@ -75,9 +59,7 @@ end
 --- Set `vim.notify` to extend it to be pause-able
 ---@param notify function|notify? the original notification function (defaults to `vim.notify`)
 function M.setup(notify)
-  if not notify then
-    notify = vim.notify
-  end
+  if not notify then notify = vim.notify end
   assert(notify ~= M.notify, "vim.notify is already setup")
   M._original, vim.notify = notify, M.notify
 end
@@ -85,9 +67,7 @@ end
 --- Remove `notify` utilities and restore original `vim.notify`
 function M.restore()
   M.notify = M._original
-  if M.is_paused() then
-    M.resume()
-  end
+  if M.is_paused() then M.resume() end
 end
 
 --- Pause notifications for a 500ms delay or until `vim.notify` changes
@@ -106,9 +86,7 @@ function M.defer_startup()
 
   -- wait till vim.notify has been replaced
   checker:start(function()
-    if vim.notify ~= M.notify then
-      replay()
-    end
+    if vim.notify ~= M.notify then replay() end
   end)
   -- or if it took more than 500ms, then something went wrong
   timer:start(500, 0, replay)

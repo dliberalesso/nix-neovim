@@ -50,6 +50,52 @@
       url = "github:numtide/treefmt-nix";
       inputs.nixpkgs.follows = "nixpkgs";
     };
+
+    # Plugins
+    astrocore = {
+      url = "github:AstroNvim/astrocore";
+      flake = false;
+    };
+
+    resession-nvim = {
+      url = "github:stevearc/resession.nvim";
+      flake = false;
+    };
+
+    astrolsp = {
+      url = "github:AstroNvim/astrolsp";
+      flake = false;
+    };
+
+    astroui = {
+      url = "github:AstroNvim/astroui";
+      flake = false;
+    };
+
+    catppuccin-nvim = {
+      url = "github:catppuccin/nvim";
+      flake = false;
+    };
+
+    luvit-meta = {
+      url = "github:Bilal2453/luvit-meta";
+      flake = false;
+    };
+
+    mini-ai = {
+      url = "github:echasnovski/mini.ai";
+      flake = false;
+    };
+
+    mini-bufremove = {
+      url = "github:echasnovski/mini.bufremove";
+      flake = false;
+    };
+
+    mini-surround = {
+      url = "github:echasnovski/mini.surround";
+      flake = false;
+    };
   };
 
   outputs = inputs:
@@ -66,7 +112,7 @@
         let
           treefmtPrograms = builtins.attrValues config.treefmt.build.programs;
 
-          neovim-overlay = import ./nix/neovim-overlay.nix { inherit treefmtPrograms; };
+          neovim-overlay = import ./nix/neovim-overlay.nix { inherit inputs treefmtPrograms; };
 
           pkgs = import inputs.nixpkgs {
             inherit system;

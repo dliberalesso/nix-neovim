@@ -62,13 +62,8 @@ let
             name = "${lib.getName p.pkg}";
             path = p.pkg;
           };
-      processDependencies =
-        if plugin ? dependencies && plugin.dependencies != null then
-          builtins.concatMap processPlugin plugin.dependencies
-        else
-          [ ];
     in
-    [ (mkEntryFromDrv plugin) ] ++ processDependencies;
+    [ (mkEntryFromDrv plugin) ];
 
   processedPlugins = builtins.concatLists (builtins.map processPlugin lazyPlugins);
   lazyPath = pkgs.linkFarm "lazy-plugins" processedPlugins;

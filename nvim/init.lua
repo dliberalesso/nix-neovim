@@ -1,12 +1,17 @@
 vim.loader.enable()
 
+require("utils.notify").init()
+
 vim.opt.shada = ""
 vim.g.mapleader = " "
 vim.g.maplocalleader = ","
 
 vim.opt.rtp:prepend(vim.env.LAZY_ROOT_DIR .. "/lazy.nvim")
 
-require("lazy").setup("plugins", {
+require("lazy").setup({
+  { import = "core" },
+  { import = "plugins" },
+}, {
   defaults = { lazy = true, version = false },
   local_spec = true, -- load project specific .lazy.lua, which will be added at the end of the spec.
   lockfile = vim.fn.stdpath("state") .. "/lazy-lock.json",

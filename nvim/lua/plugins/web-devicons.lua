@@ -2,10 +2,12 @@
 return {
   dir = vim.env.LAZY_ROOT_DIR .. "/nvim-web-devicons",
 
-  config = function()
-    require("nvim-web-devicons").setup({
+  enabled = vim.g.icons_enabled ~= false,
+
+  opts = function()
+    return {
       override = {
-        default_icon = { icon = require("core.icons").DefaultFile },
+        default_icon = { icon = require("astroui").get_icon("DefaultFile") },
         deb = { icon = "", name = "Deb" },
         lock = { icon = "󰌾", name = "Lock" },
         mp3 = { icon = "󰎆", name = "Mp3" },
@@ -19,6 +21,6 @@ return {
         xz = { icon = "", name = "Xz" },
         zip = { icon = "", name = "Zip" },
       },
-    })
+    }
   end,
 }
