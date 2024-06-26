@@ -2,7 +2,7 @@
 return {
   dir = vim.env.LAZY_ROOT_DIR .. "/flash.nvim",
 
-  event = "VeryLazy",
+  event = "User AstroFile",
 
   dependencies = {
     {
