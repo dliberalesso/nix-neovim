@@ -19,6 +19,7 @@ return {
         indentscope_color = "mauve",
       },
       native_lsp = { enabled = true },
+      neogit = true,
       neotree = true,
       notify = true,
       rainbow_delimiters = true,

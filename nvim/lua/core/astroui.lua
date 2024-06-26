@@ -51,6 +51,7 @@ return {
       LSPLoading2 = "󰀚",
       LSPLoading3 = "",
       MacroRecording = "",
+      Neogit = "󰰔",
       Package = "󰏖",
       Paste = "󰅌",
       Refresh = "",

@@ -65,12 +65,16 @@ let
     dressing-nvim
     edgy-nvim
     flash-nvim
+
+    diffview-nvim
     gitsigns-nvim
+    lazygit-nvim
+    neogit
+
     guess-indent-nvim
     heirline-nvim
     vim-illuminate
     indent-blankline-nvim
-    lazygit-nvim
 
     nvim-lspconfig
     inc-rename-nvim
