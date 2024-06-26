@@ -28,6 +28,7 @@ let
       '';
     });
 
+  # Plugins
   plugins = with pkgs.vimPlugins; [
     lazy-nvim
 
@@ -130,6 +131,8 @@ let
   neovim-unwrapped = pkgs.neovim;
 in
 {
+  # This is the neovim derivation
+  # returned by the overlay
   nvim-pkg = mkNeovim {
     inherit extraPackages extraLuaPackages plugins neovim-unwrapped;
   };
@@ -138,5 +141,10 @@ in
     inherit extraPackages extraLuaPackages plugins neovim-unwrapped;
     appName = "nvim-dev";
     dev = true;
+  };
+
+  # This can be symlinked in the devShell's shellHook
+  nvim-luarc-json = final.mk-luarc-json {
+    inherit plugins;
   };
 }
