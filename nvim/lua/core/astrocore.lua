@@ -35,11 +35,11 @@ return {
           focused = false,
           style = "minimal",
           border = "rounded",
-          source = "always",
+          source = true,
           header = "",
           prefix = "",
         },
-        jump = true,
+        jump = { float = true },
       },
       rooter = {
         enabled = true,
