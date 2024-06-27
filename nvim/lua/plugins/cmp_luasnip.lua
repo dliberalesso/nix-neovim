@@ -23,6 +23,7 @@ return {
       { dir = vim.env.LAZY_ROOT_DIR .. "/cmp-buffer" },
       { dir = vim.env.LAZY_ROOT_DIR .. "/cmp-path" },
       { dir = vim.env.LAZY_ROOT_DIR .. "/cmp-nvim-lsp" },
+      { dir = vim.env.LAZY_ROOT_DIR .. "/lspkind-nvim" },
     },
 
     event = "InsertCharPre",
@@ -47,7 +48,31 @@ return {
           return vim.F.if_nil(vim.b.cmp_enabled, astro.config.features.cmp)
         end,
         preselect = cmp.PreselectMode.None,
-        formatting = { fields = { "kind", "abbr", "menu" } },
+        formatting = {
+          fields = { "kind", "abbr", "menu" },
+          format = require("lspkind").cmp_format({
+            mode = "symbol",
+            symbol_map = {
+              Array = "󰅪",
+              Boolean = "⊨",
+              Class = "󰌗",
+              Constructor = "",
+              Key = "󰌆",
+              Namespace = "󰅪",
+              Null = "NULL",
+              Number = "#",
+              Object = "󰀚",
+              Package = "󰏗",
+              Property = "",
+              Reference = "",
+              Snippet = "",
+              String = "󰀬",
+              TypeParameter = "󰊄",
+              Unit = "",
+            },
+            menu = {},
+          }),
+        },
         confirm_opts = {
           behavior = cmp.ConfirmBehavior.Replace,
           select = false,
