@@ -77,6 +77,10 @@ return {
     maps.n["<Leader>ld"] = { function() vim.diagnostic.open_float() end, desc = "Hover diagnostics" }
     maps.n["gl"] = { function() vim.diagnostic.open_float() end, desc = "Hover diagnostics" }
 
+    -- Navigate loclist
+    maps.n["]l"] = { vim.cmd.lnext, desc = "Next loclist" }
+    maps.n["[l"] = { vim.cmd.lprev, desc = "Previous loclist" }
+
     -- Navigate tabs
     maps.n["]t"] = { function() vim.cmd.tabnext() end, desc = "Next tab" }
     maps.n["[t"] = { function() vim.cmd.tabprevious() end, desc = "Previous tab" }
