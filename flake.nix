@@ -27,11 +27,6 @@
 
     flake-root.url = "github:srid/flake-root";
 
-    gen-luarc = {
-      url = "github:mrcjkb/nix-gen-luarc-json";
-      inputs.flake-parts.follows = "flake-parts";
-    };
-
     git-hooks = {
       url = "github:cachix/git-hooks.nix";
       inputs = {
@@ -122,7 +117,6 @@
           pkgs = import inputs.nixpkgs {
             inherit system;
             overlays = [
-              inputs.gen-luarc.overlays.default
               inputs.neovim-nightly.overlays.default
               neovim-overlay
             ];
@@ -140,8 +134,6 @@
 
             shellHook = ''
               ${config.pre-commit.installationScript}
-              # symlink the .luarc.json generated in the overlay
-              ln -fs ${pkgs.nvim-luarc-json} .luarc.json
               export NIX_ABS_CONFIG="$PWD"
             '';
           };
@@ -149,6 +141,7 @@
           packages = rec {
             default = nvim;
             nvim = pkgs.nvim-pkg;
+            nvim-with-aliases = pkgs.nvim-pkg-with-aliases;
             nvim-dev = pkgs.nvim-pkg-dev;
           };
 

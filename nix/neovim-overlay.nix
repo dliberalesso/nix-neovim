@@ -142,15 +142,14 @@ in
     inherit extraPackages extraLuaPackages plugins neovim-unwrapped;
   };
 
+  nvim-pkg-with-aliases = mkNeovim {
+    inherit extraPackages extraLuaPackages plugins neovim-unwrapped;
+    appName = "nvim";
+  };
+
   nvim-pkg-dev = mkNeovim {
     inherit extraPackages extraLuaPackages plugins neovim-unwrapped;
     appName = "nvim-dev";
     dev = true;
-  };
-
-  # This can be symlinked in the devShell's shellHook
-  nvim-luarc-json = final.mk-luarc-json {
-    inherit plugins;
-    nvim = neovim-unwrapped;
   };
 }
