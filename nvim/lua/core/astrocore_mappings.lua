@@ -81,6 +81,10 @@ return {
     maps.n["]l"] = { vim.cmd.lnext, desc = "Next loclist" }
     maps.n["[l"] = { vim.cmd.lprev, desc = "Previous loclist" }
 
+    -- Navigate quickfix
+    maps.n["]q"] = { vim.cmd.cnext, desc = "Next quickfix" }
+    maps.n["[q"] = { vim.cmd.cprev, desc = "Previous quickfix" }
+
     -- Navigate tabs
     maps.n["]t"] = { function() vim.cmd.tabnext() end, desc = "Next tab" }
     maps.n["[t"] = { function() vim.cmd.tabprevious() end, desc = "Previous tab" }
