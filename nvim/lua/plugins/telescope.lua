@@ -110,6 +110,24 @@ return {
       local actions, get_icon = require("telescope.actions"), require("astroui").get_icon
       local selected_icon = get_icon("Selected", 1)
 
+      local open_selected = function(prompt_bufnr)
+        local picker = require("telescope.actions.state").get_current_picker(prompt_bufnr)
+        local selected = picker:get_multi_selection()
+        if vim.tbl_isempty(selected) then
+          actions.select_default(prompt_bufnr)
+        else
+          actions.close(prompt_bufnr)
+          for _, file in pairs(selected) do
+            if file.path then vim.cmd("edit" .. (file.lnum and " +" .. file.lnum or "") .. " " .. file.path) end
+          end
+        end
+      end
+
+      local open_all = function(prompt_bufnr)
+        actions.select_all(prompt_bufnr)
+        open_selected(prompt_bufnr)
+      end
+
       return {
         defaults = {
           git_worktrees = require("astrocore").config.git_worktrees,
@@ -131,8 +149,16 @@ return {
               ["<C-P>"] = actions.cycle_history_prev,
               ["<C-J>"] = actions.move_selection_next,
               ["<C-K>"] = actions.move_selection_previous,
+              ["<CR>"] = open_selected,
+              -- FIX: Keymap does not work (maybe wezterm stuff)
+              -- ["<C-CR>"] = open_all,
             },
-            n = { q = actions.close },
+            n = {
+              q = actions.close,
+              ["<CR>"] = open_selected,
+              -- FIX: Keymap does not work (maybe wezterm stuff)
+              -- ["<C-CR>"] = open_all,
+            },
           },
         },
         highlight = { enable = true },
