@@ -101,6 +101,7 @@
   outputs = inputs:
     inputs.flake-parts.lib.mkFlake { inherit inputs; } {
       imports = with inputs; [
+        flake-parts.flakeModules.easyOverlay
         flake-root.flakeModule
         git-hooks.flakeModule
         treefmt-nix.flakeModule
@@ -108,63 +109,58 @@
 
       systems = [ "x86_64-linux" "aarch64-linux" ];
 
-      perSystem = { self', config, system, ... }:
-        let
+      perSystem = { config, pkgs, system, ... }: {
+        _module.args.pkgs = import inputs.nixpkgs {
+          inherit system;
+          overlays = [
+            inputs.neovim-nightly.overlays.default
+          ];
+        };
+
+        overlayAttrs = {
+          inherit (config.packages) nvim-dev nvim-with-aliases;
+        };
+
+        devShells.default = pkgs.mkShell {
+          nativeBuildInputs = [
+            pkgs.just
+          ];
+
+          packages = [
+            config.packages.nvim-dev
+          ];
+
+          shellHook = ''
+            ${config.pre-commit.installationScript}
+            export NIX_ABS_CONFIG="$PWD"
+          '';
+        };
+
+        packages = import ./nix/neovimPackages.nix {
+          inherit inputs pkgs;
           treefmtPrograms = builtins.attrValues config.treefmt.build.programs;
+        };
 
-          neovim-overlay = import ./nix/neovim-overlay.nix { inherit inputs treefmtPrograms; };
-
-          pkgs = import inputs.nixpkgs {
-            inherit system;
-            overlays = [
-              inputs.neovim-nightly.overlays.default
-              neovim-overlay
-            ];
-          };
-        in
-        {
-          devShells.default = pkgs.mkShell {
-            nativeBuildInputs = [
-              pkgs.just
-            ];
-
-            packages = [
-              self'.packages.nvim-dev
-            ];
-
-            shellHook = ''
-              ${config.pre-commit.installationScript}
-              export NIX_ABS_CONFIG="$PWD"
-            '';
-          };
-
-          packages = rec {
-            default = nvim;
-            nvim = pkgs.nvim-pkg;
-            nvim-with-aliases = pkgs.nvim-pkg-with-aliases;
-            nvim-dev = pkgs.nvim-pkg-dev;
-          };
-
-          pre-commit.check.enable = true;
-          pre-commit.settings.hooks = {
-            treefmt = {
-              enable = true;
-              package = config.treefmt.build.wrapper;
-            };
-          };
-
+        pre-commit.check.enable = true;
+        pre-commit.settings.hooks = {
           treefmt = {
-            inherit (config.flake-root) projectRootFile;
-            programs = {
-              deadnix.enable = true;
-              prettier.enable = true;
-              nixpkgs-fmt.enable = true;
-              shfmt.enable = true;
-              stylua.enable = true;
-              statix.enable = true;
-              taplo.enable = true;
-            };
+            enable = true;
+            package = config.treefmt.build.wrapper;
           };
         };
+
+        treefmt = {
+          inherit (config.flake-root) projectRootFile;
+          programs = {
+            deadnix.enable = true;
+            prettier.enable = true;
+            nixpkgs-fmt.enable = true;
+            shfmt.enable = true;
+            stylua.enable = true;
+            statix.enable = true;
+            taplo.enable = true;
+          };
+        };
+      };
     };
 }

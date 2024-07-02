@@ -1,7 +1,5 @@
-{ inputs, treefmtPrograms }: final: _prev:
+{ inputs, pkgs, treefmtPrograms }:
 let
-  pkgs = final;
-
   # Use this to create a plugin from a flake input
   mkNvimPlugin = src: pname:
     pkgs.vimUtils.buildVimPlugin {
@@ -135,19 +133,20 @@ let
 
   neovim-unwrapped = pkgs.neovim;
 in
+rec
 {
-  # This is the neovim derivation
-  # returned by the overlay
-  nvim-pkg = mkNeovim {
+  default = nvim;
+
+  nvim = mkNeovim {
     inherit extraPackages extraLuaPackages plugins neovim-unwrapped;
   };
 
-  nvim-pkg-with-aliases = mkNeovim {
+  nvim-with-aliases = mkNeovim {
     inherit extraPackages extraLuaPackages plugins neovim-unwrapped;
     appName = "nvim";
   };
 
-  nvim-pkg-dev = mkNeovim {
+  nvim-dev = mkNeovim {
     inherit extraPackages extraLuaPackages plugins neovim-unwrapped;
     appName = "nvim-dev";
     dev = true;
