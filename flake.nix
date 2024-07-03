@@ -27,12 +27,38 @@
 
     flake-root.url = "github:srid/flake-root";
 
+    gen-luarc = {
+      url = "github:mrcjkb/nix-gen-luarc-json";
+      inputs.flake-parts.follows = "flake-parts";
+    };
+
     git-hooks = {
       url = "github:cachix/git-hooks.nix";
       inputs = {
         nixpkgs.follows = "nixpkgs";
         nixpkgs-stable.follows = "nixpkgs";
         flake-compat.follows = "flake-compat";
+      };
+    };
+
+    lz-n = {
+      url = "github:nvim-neorocks/lz.n";
+      inputs = {
+        nixpkgs.follows = "nixpkgs";
+        flake-parts.follows = "flake-parts";
+        gen-luarc.follows = "gen-luarc";
+        neorocks.follows = "neorocks";
+        pre-commit-hooks.follows = "git-hooks";
+      };
+    };
+
+    neorocks = {
+      url = "github:nvim-neorocks/neorocks";
+      inputs = {
+        flake-compat.follows = "flake-compat";
+        flake-parts.follows = "flake-parts";
+        git-hooks.follows = "git-hooks";
+        neovim-nightly.follows = "neovim-nightly";
       };
     };
 
@@ -52,48 +78,8 @@
     };
 
     # Plugins
-    astrocore = {
-      url = "github:AstroNvim/astrocore";
-      flake = false;
-    };
-
-    resession-nvim = {
-      url = "github:stevearc/resession.nvim";
-      flake = false;
-    };
-
-    astrolsp = {
-      url = "github:AstroNvim/astrolsp";
-      flake = false;
-    };
-
-    astroui = {
-      url = "github:AstroNvim/astroui";
-      flake = false;
-    };
-
-    catppuccin-nvim = {
-      url = "github:catppuccin/nvim";
-      flake = false;
-    };
-
     luvit-meta = {
       url = "github:Bilal2453/luvit-meta";
-      flake = false;
-    };
-
-    mini-ai = {
-      url = "github:echasnovski/mini.ai";
-      flake = false;
-    };
-
-    mini-bufremove = {
-      url = "github:echasnovski/mini.bufremove";
-      flake = false;
-    };
-
-    mini-surround = {
-      url = "github:echasnovski/mini.surround";
       flake = false;
     };
   };
@@ -109,16 +95,18 @@
 
       systems = [ "x86_64-linux" "aarch64-linux" ];
 
-      perSystem = { config, pkgs, system, ... }: {
+      perSystem = { config, lib, pkgs, system, ... }: {
         _module.args.pkgs = import inputs.nixpkgs {
           inherit system;
           overlays = [
-            inputs.neovim-nightly.overlays.default
+            inputs.neorocks.overlays.default
+            inputs.gen-luarc.overlays.default
+            inputs.lz-n.overlays.default
           ];
         };
 
         overlayAttrs = {
-          inherit (config.packages) nvim-dev nvim-with-aliases;
+          inherit (config.packages) nvim;
         };
 
         devShells.default = pkgs.mkShell {
@@ -126,19 +114,21 @@
             pkgs.just
           ];
 
-          packages = [
-            config.packages.nvim-dev
-          ];
+          # packages = [
+          #   config.packages.nvim
+          # ];
 
           shellHook = ''
             ${config.pre-commit.installationScript}
-            export NIX_ABS_CONFIG="$PWD"
+            # export NIX_ABS_CONFIG="$PWD"
           '';
         };
 
-        packages = import ./nix/neovimPackages.nix {
-          inherit inputs pkgs;
-          treefmtPrograms = builtins.attrValues config.treefmt.build.programs;
+        packages = rec {
+          default = nvim;
+          nvim = import ./nix/mkNvim.nix {
+            inherit inputs config lib pkgs;
+          };
         };
 
         pre-commit.check.enable = true;
