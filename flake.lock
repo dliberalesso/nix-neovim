@@ -177,38 +177,6 @@
         "type": "github"
       }
     },
-    "lz-n": {
-      "inputs": {
-        "flake-parts": [
-          "flake-parts"
-        ],
-        "gen-luarc": [
-          "gen-luarc"
-        ],
-        "neorocks": [
-          "neorocks"
-        ],
-        "nixpkgs": [
-          "nixpkgs"
-        ],
-        "pre-commit-hooks": [
-          "git-hooks"
-        ]
-      },
-      "locked": {
-        "lastModified": 1719989949,
-        "narHash": "sha256-oHwmlLgdJJDz5+gs1KLAa2MHQAadM/JYmHGfep9yl28=",
-        "owner": "nvim-neorocks",
-        "repo": "lz.n",
-        "rev": "4c790ba2c3789f580aa019712bbe3112f85e73a0",
-        "type": "github"
-      },
-      "original": {
-        "owner": "nvim-neorocks",
-        "repo": "lz.n",
-        "type": "github"
-      }
-    },
     "neorocks": {
       "inputs": {
         "flake-compat": [
@@ -354,7 +322,6 @@
         "gen-luarc": "gen-luarc",
         "git-hooks": "git-hooks",
         "luvit-meta": "luvit-meta",
-        "lz-n": "lz-n",
         "neorocks": "neorocks",
         "neovim-nightly": "neovim-nightly",
         "nixpkgs": "nixpkgs_3",

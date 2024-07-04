@@ -41,16 +41,16 @@
       };
     };
 
-    lz-n = {
-      url = "github:nvim-neorocks/lz.n";
-      inputs = {
-        nixpkgs.follows = "nixpkgs";
-        flake-parts.follows = "flake-parts";
-        gen-luarc.follows = "gen-luarc";
-        neorocks.follows = "neorocks";
-        pre-commit-hooks.follows = "git-hooks";
-      };
-    };
+    # lz-n = {
+    #   url = "github:nvim-neorocks/lz.n";
+    #   inputs = {
+    #     nixpkgs.follows = "nixpkgs";
+    #     flake-parts.follows = "flake-parts";
+    #     gen-luarc.follows = "gen-luarc";
+    #     neorocks.follows = "neorocks";
+    #     pre-commit-hooks.follows = "git-hooks";
+    #   };
+    # };
 
     neorocks = {
       url = "github:nvim-neorocks/neorocks";
@@ -93,15 +93,15 @@
         treefmt-nix.flakeModule
       ];
 
-      systems = [ "x86_64-linux" "aarch64-linux" ];
+      systems = [ "x86_64-linux" ];
 
       perSystem = { config, lib, pkgs, system, ... }: {
         _module.args.pkgs = import inputs.nixpkgs {
           inherit system;
           overlays = [
-            inputs.neovim-nightly.overlays.default
+            inputs.neorocks.overlays.default
             inputs.gen-luarc.overlays.default
-            inputs.lz-n.overlays.default
+            # inputs.lz-n.overlays.default
           ];
         };
 
@@ -131,13 +131,11 @@
 
             extraPackages = import ./nix/extraPackages.nix { inherit config pkgs; };
 
-            extraLuaPackages = p: [
-              p.jsregexp
-            ];
+            extraLuaPackages = import ./nix/extraLuaPackages.nix;
 
             plugins = import ./nix/plugins.nix { inherit pkgs; };
 
-            neovim-unwrapped = pkgs.neovim;
+            neovim-unwrapped = pkgs.neovim-nightly;
           };
         };
 

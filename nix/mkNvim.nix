@@ -1,5 +1,8 @@
-{ pkgs
+{ lib
+, pkgs
 , defaultEditor ? true
+, extraPackages ? [ ]
+, extraLuaPackages ? _p: [ ]
 , neovim-unwrapped ? pkgs.neovim-unwrapped
 , plugins ? [ ]
 , viAlias ? true
@@ -8,32 +11,51 @@
 , withNodeJs ? false
 , withPerl ? false
 , withPython3 ? false
+, withSqlite ? true
 , withRuby ? false
 }:
 let
-  patchedNeovim = neovim-unwrapped.overrideAttrs (_oa: {
-    patches = [ ./0001-NIX_ABS_PATH.patch ];
+  patchedNeovim = neovim-unwrapped.overrideAttrs (oa: {
+    patches = oa.patches ++ [ ./0001-NIX_ABS_PATH.patch ];
   });
 
+  # FIXME
+  # Same as the original, but all plugins are optional by default
+  # makeNeovimConfig = pkgs.neovimUtils.makeNeovimConfig.overrideAttrs (oa: {
+  #   pluginsNormalized =
+  #     let
+  #       defaultPlugin = {
+  #         plugin = null;
+  #         config = null;
+  #         optional = true;
+  #       };
+  #     in
+  #     map (x: defaultPlugin // (if (x ? plugin) then x else { plugin = x; })) oa.plugins;
+  # });
+  #
+  # neovimConfig = makeNeovimConfig {
+  neovimConfig = pkgs.neovimUtils.makeNeovimConfig {
+    inherit defaultEditor;
+    inherit extraLuaPackages;
+    inherit viAlias vimAlias vimdiffAlias;
+    inherit withNodeJs withPerl withPython3 withRuby;
+    inherit plugins;
+  };
+
+  externalPackages = extraPackages ++ (lib.optionals withSqlite [ pkgs.sqlite ]);
+
   # Add arguments to the Neovim wrapper script
-  # extraMakeWrapperArgs = builtins.concatStringsSep " " (
-  #   ''--prefix PATH : "${lib.makeBinPath (extraPackages ++ [ pkgs.sqlite ])}"''
-  #   # Set the LIBSQLITE_CLIB_PATH if sqlite is enabled
-  #   ++ ''--set LIBSQLITE_CLIB_PATH "${pkgs.sqlite.out}/lib/libsqlite3.so"''
-  #   # Set the LIBSQLITE environment variable if sqlite is enabled
-  #   ++ ''--set LIBSQLITE "${pkgs.sqlite.out}/lib/libsqlite3.so"''
-  # );
-
-  # luaPackages = patchedNeovim.lua.pkgs;
-  # resolvedExtraLuaPackages = extraLuaPackages luaPackages;
-
-  # Native Lua libraries
-  # extraMakeWrapperLuaCArgs =
-  #   ''--suffix LUA_CPATH ";" "${lib.concatMapStringsSep ";" luaPackages.getLuaCPath resolvedExtraLuaPackages}"'';
-
-  # Lua libraries
-  # extraMakeWrapperLuaArgs =
-  #   ''--suffix LUA_PATH ";" "${lib.concatMapStringsSep ";" luaPackages.getLuaPath resolvedExtraLuaPackages}"'';
+  extraMakeWrapperArgs = builtins.concatStringsSep " " (
+    # Add external packages to the PATH
+    (lib.optional (externalPackages != [ ])
+      ''--prefix PATH : "${lib.makeBinPath externalPackages}"'')
+    # Set the LIBSQLITE_CLIB_PATH if sqlite is enabled
+    ++ (lib.optional withSqlite
+      ''--set LIBSQLITE_CLIB_PATH "${pkgs.sqlite.out}/lib/libsqlite3.so"'')
+    # Set the LIBSQLITE environment variable if sqlite is enabled
+    ++ (lib.optional withSqlite
+      ''--set LIBSQLITE "${pkgs.sqlite.out}/lib/libsqlite3.so"'')
+  );
 
   # Disable RTP plugins
   # removeRtpPaths = map (target: "rm -f $out/share/nvim/${target}") [
@@ -41,19 +63,11 @@ let
   # ];
 
   neovim-wrapped = pkgs.wrapNeovimUnstable patchedNeovim (
-    pkgs.neovimUtils.makeNeovimConfig {
-      inherit defaultEditor;
-      inherit viAlias vimAlias vimdiffAlias;
-      inherit withNodeJs withPerl withPython3 withRuby;
-      inherit plugins;
-
-      # wrapperArgs = lib.escapeShellArgs ""
-      #   + extraMakeWrapperArgs
-      #   + " "
-      #   + extraMakeWrapperLuaCArgs
-      #   + " "
-      #   + extraMakeWrapperLuaArgs;
-
+    neovimConfig // {
+      wrapperArgs =
+        lib.escapeShellArgs neovimConfig.wrapperArgs
+        + " "
+        + extraMakeWrapperArgs;
       wrapRc = false;
     }
   );

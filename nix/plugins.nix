@@ -25,10 +25,10 @@
 #   });
 
 # (mkNvimPlugin inputs.resession-nvim "resession.nvim")
-[
-  pkgs.vimPlugins.lz-n
+with pkgs.vimPlugins; [
+  # vim-startuptime
   {
-    plugin = pkgs.vimPlugins.vim-startuptime;
+    plugin = vim-startuptime;
     optional = true;
   }
   # {
