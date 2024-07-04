@@ -114,20 +114,20 @@
             pkgs.just
           ];
 
-          # packages = [
-          #   config.packages.nvim
-          # ];
+          packages = [
+            config.packages.nvim
+          ];
 
           shellHook = ''
             ${config.pre-commit.installationScript}
-            # export NIX_ABS_CONFIG="$PWD"
+            export NIX_ABS_CONFIG="$PWD"
           '';
         };
 
         packages = rec {
           default = nvim;
-          nvim = import ./nix/mkNvim.nix {
-            inherit inputs config lib pkgs;
+          nvim = import ./nix/nvim {
+            inherit config lib pkgs;
           };
         };
 

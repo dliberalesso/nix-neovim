@@ -1,4 +1,4 @@
-vim.opt.shada = ""
+-- vim.opt.shada = ""
 
 vim.g.mapleader = " "
 vim.g.maplocalleader = ","
