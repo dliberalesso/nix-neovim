@@ -99,7 +99,7 @@
         _module.args.pkgs = import inputs.nixpkgs {
           inherit system;
           overlays = [
-            inputs.neorocks.overlays.default
+            inputs.neovim-nightly.overlays.default
             inputs.gen-luarc.overlays.default
             inputs.lz-n.overlays.default
           ];
@@ -126,8 +126,18 @@
 
         packages = rec {
           default = nvim;
-          nvim = import ./nix/nvim {
-            inherit config lib pkgs;
+          nvim = import ./nix/mkNvim.nix {
+            inherit lib pkgs;
+
+            extraPackages = import ./nix/extraPackages.nix { inherit config pkgs; };
+
+            extraLuaPackages = p: [
+              p.jsregexp
+            ];
+
+            plugins = import ./nix/plugins.nix { inherit pkgs; };
+
+            neovim-unwrapped = pkgs.neovim;
           };
         };
 

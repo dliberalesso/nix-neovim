@@ -1,8 +1,5 @@
-{ lib
-, pkgs
+{ pkgs
 , defaultEditor ? true
-, extraPackages ? [ ]
-, extraLuaPackages ? _p: [ ]
 , neovim-unwrapped ? pkgs.neovim-unwrapped
 , plugins ? [ ]
 , viAlias ? true
@@ -19,24 +16,24 @@ let
   });
 
   # Add arguments to the Neovim wrapper script
-  extraMakeWrapperArgs = builtins.concatStringsSep " " (
-    ''--prefix PATH : "${lib.makeBinPath (extraPackages ++ [ pkgs.sqlite ])}"''
-    # Set the LIBSQLITE_CLIB_PATH if sqlite is enabled
-    ++ ''--set LIBSQLITE_CLIB_PATH "${pkgs.sqlite.out}/lib/libsqlite3.so"''
-    # Set the LIBSQLITE environment variable if sqlite is enabled
-    ++ ''--set LIBSQLITE "${pkgs.sqlite.out}/lib/libsqlite3.so"''
-  );
+  # extraMakeWrapperArgs = builtins.concatStringsSep " " (
+  #   ''--prefix PATH : "${lib.makeBinPath (extraPackages ++ [ pkgs.sqlite ])}"''
+  #   # Set the LIBSQLITE_CLIB_PATH if sqlite is enabled
+  #   ++ ''--set LIBSQLITE_CLIB_PATH "${pkgs.sqlite.out}/lib/libsqlite3.so"''
+  #   # Set the LIBSQLITE environment variable if sqlite is enabled
+  #   ++ ''--set LIBSQLITE "${pkgs.sqlite.out}/lib/libsqlite3.so"''
+  # );
 
-  luaPackages = patchedNeovim.lua.pkgs;
-  resolvedExtraLuaPackages = extraLuaPackages luaPackages;
+  # luaPackages = patchedNeovim.lua.pkgs;
+  # resolvedExtraLuaPackages = extraLuaPackages luaPackages;
 
   # Native Lua libraries
-  extraMakeWrapperLuaCArgs =
-    ''--suffix LUA_CPATH ";" "${lib.concatMapStringsSep ";" luaPackages.getLuaCPath resolvedExtraLuaPackages}"'';
+  # extraMakeWrapperLuaCArgs =
+  #   ''--suffix LUA_CPATH ";" "${lib.concatMapStringsSep ";" luaPackages.getLuaCPath resolvedExtraLuaPackages}"'';
 
   # Lua libraries
-  extraMakeWrapperLuaArgs =
-    ''--suffix LUA_PATH ";" "${lib.concatMapStringsSep ";" luaPackages.getLuaPath resolvedExtraLuaPackages}"'';
+  # extraMakeWrapperLuaArgs =
+  #   ''--suffix LUA_PATH ";" "${lib.concatMapStringsSep ";" luaPackages.getLuaPath resolvedExtraLuaPackages}"'';
 
   # Disable RTP plugins
   # removeRtpPaths = map (target: "rm -f $out/share/nvim/${target}") [
@@ -50,12 +47,12 @@ let
       inherit withNodeJs withPerl withPython3 withRuby;
       inherit plugins;
 
-      wrapperArgs = lib.escapeShellArgs ""
-        + extraMakeWrapperArgs
-        + " "
-        + extraMakeWrapperLuaCArgs
-        + " "
-        + extraMakeWrapperLuaArgs;
+      # wrapperArgs = lib.escapeShellArgs ""
+      #   + extraMakeWrapperArgs
+      #   + " "
+      #   + extraMakeWrapperLuaCArgs
+      #   + " "
+      #   + extraMakeWrapperLuaArgs;
 
       wrapRc = false;
     }
