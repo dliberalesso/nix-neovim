@@ -15,10 +15,6 @@
 , withRuby ? false
 }:
 let
-  patchedNeovim = neovim-unwrapped.overrideAttrs (oa: {
-    patches = oa.patches ++ [ ./0001-NIX_ABS_PATH.patch ];
-  });
-
   # FIXME
   # Same as the original, but all plugins are optional by default
   # makeNeovimConfig = pkgs.neovimUtils.makeNeovimConfig.overrideAttrs (oa: {
@@ -62,7 +58,7 @@ let
   #   "runtime/plugin/matchit.vim"
   # ];
 
-  neovim-wrapped = pkgs.wrapNeovimUnstable patchedNeovim (
+  neovim-wrapped = pkgs.wrapNeovimUnstable neovim-unwrapped (
     neovimConfig // {
       wrapperArgs =
         lib.escapeShellArgs neovimConfig.wrapperArgs

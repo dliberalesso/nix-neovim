@@ -27,38 +27,12 @@
 
     flake-root.url = "github:srid/flake-root";
 
-    gen-luarc = {
-      url = "github:mrcjkb/nix-gen-luarc-json";
-      inputs.flake-parts.follows = "flake-parts";
-    };
-
     git-hooks = {
       url = "github:cachix/git-hooks.nix";
       inputs = {
         nixpkgs.follows = "nixpkgs";
         nixpkgs-stable.follows = "nixpkgs";
         flake-compat.follows = "flake-compat";
-      };
-    };
-
-    # lz-n = {
-    #   url = "github:nvim-neorocks/lz.n";
-    #   inputs = {
-    #     nixpkgs.follows = "nixpkgs";
-    #     flake-parts.follows = "flake-parts";
-    #     gen-luarc.follows = "gen-luarc";
-    #     neorocks.follows = "neorocks";
-    #     pre-commit-hooks.follows = "git-hooks";
-    #   };
-    # };
-
-    neorocks = {
-      url = "github:nvim-neorocks/neorocks";
-      inputs = {
-        flake-compat.follows = "flake-compat";
-        flake-parts.follows = "flake-parts";
-        git-hooks.follows = "git-hooks";
-        neovim-nightly.follows = "neovim-nightly";
       };
     };
 
@@ -99,9 +73,7 @@
         _module.args.pkgs = import inputs.nixpkgs {
           inherit system;
           overlays = [
-            inputs.neorocks.overlays.default
-            inputs.gen-luarc.overlays.default
-            # inputs.lz-n.overlays.default
+            inputs.neovim-nightly.overlays.default
           ];
         };
 
@@ -115,7 +87,7 @@
           ];
 
           packages = [
-            config.packages.nvim
+            config.packages.nvim-dev
           ];
 
           shellHook = ''
@@ -124,20 +96,7 @@
           '';
         };
 
-        packages = rec {
-          default = nvim;
-          nvim = import ./nix/mkNvim.nix {
-            inherit lib pkgs;
-
-            extraPackages = import ./nix/extraPackages.nix { inherit config pkgs; };
-
-            extraLuaPackages = import ./nix/extraLuaPackages.nix;
-
-            plugins = import ./nix/plugins.nix { inherit pkgs; };
-
-            neovim-unwrapped = pkgs.neovim-nightly;
-          };
-        };
+        packages = import ./nix/mkPackages.nix { inherit config lib pkgs; };
 
         pre-commit.check.enable = true;
         pre-commit.settings.hooks = {
