@@ -26,11 +26,11 @@
 
 # (mkNvimPlugin inputs.resession-nvim "resession.nvim")
 with pkgs.vimPlugins; [
-  # vim-startuptime
-  {
-    plugin = vim-startuptime;
-    optional = true;
-  }
+  vim-startuptime
+  # {
+  #   plugin = vim-startuptime;
+  #   optional = true;
+  # }
   # {
   #   plugin = nvim-treesitter;
   #   optional = true;

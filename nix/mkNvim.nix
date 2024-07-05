@@ -15,27 +15,21 @@
 , withRuby ? false
 }:
 let
-  # FIXME
-  # Same as the original, but all plugins are optional by default
-  # makeNeovimConfig = pkgs.neovimUtils.makeNeovimConfig.overrideAttrs (oa: {
-  #   pluginsNormalized =
-  #     let
-  #       defaultPlugin = {
-  #         plugin = null;
-  #         config = null;
-  #         optional = true;
-  #       };
-  #     in
-  #     map (x: defaultPlugin // (if (x ? plugin) then x else { plugin = x; })) oa.plugins;
-  # });
-  #
-  # neovimConfig = makeNeovimConfig {
   neovimConfig = pkgs.neovimUtils.makeNeovimConfig {
     inherit defaultEditor;
     inherit extraLuaPackages;
     inherit viAlias vimAlias vimdiffAlias;
     inherit withNodeJs withPerl withPython3 withRuby;
-    inherit plugins;
+
+    plugins =
+      let
+        defaultPlugin = {
+          plugin = null;
+          config = null;
+          optional = true;
+        };
+      in
+      map (x: defaultPlugin // (if (x ? plugin) then x else { plugin = x; })) plugins;
   };
 
   externalPackages = extraPackages ++ (lib.optionals withSqlite [ pkgs.sqlite ]);
