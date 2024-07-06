@@ -6,9 +6,6 @@
 #     version = src.lastModifiedDate;
 #   };
 
-# This is the helper function that builds the Neovim derivation.
-# mkNeovim = pkgs.callPackage ./mkNeovim.nix { };
-
 # nvim-treesitter = pkgs.vimPlugins.nvim-treesitter.withAllGrammars.overrideAttrs (_:
 #   let
 #     treesitter-parser-paths =

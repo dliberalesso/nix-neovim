@@ -47,6 +47,7 @@ let
       ''--set LIBSQLITE "${pkgs.sqlite.out}/lib/libsqlite3.so"'')
   );
 
+  # FIXME:
   # Disable RTP plugins
   # removeRtpPaths = map (target: "rm -f $out/share/nvim/${target}") [
   #   "runtime/plugin/matchit.vim"
