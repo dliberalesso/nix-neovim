@@ -65,19 +65,21 @@ let
   );
 
   # Disable RTP plugins
-  removeRuntimePlugins = map (target: "rm -f $out/share/nvim/runtime/plugin/${target}") [
-    "gzip.vim"
-    "matchit.vim"
-    "matchparen.vim"
-    "netrwPlugin.vim"
-    "osc52.lua"
-    "rplugin.vim"
-    "rplugin.vim.orig"
-    "spellfile.vim"
-    "tarPlugin.vim"
-    "tohtml.lua"
-    "tutor.vim"
-    "zipPlugin.vim"
+  removeRuntimePlugins = map (target: "rm -f $out/share/nvim/${target}") [
+    "runtime/menu.vim"
+    "runtime/mswin.vim"
+    "runtime/plugin/gzip.vim"
+    "runtime/plugin/matchit.vim"
+    "runtime/plugin/matchparen.vim"
+    "runtime/plugin/netrwPlugin.vim"
+    "runtime/plugin/osc52.lua"
+    "runtime/plugin/rplugin.vim"
+    "runtime/plugin/rplugin.vim.orig"
+    "runtime/plugin/spellfile.vim"
+    "runtime/plugin/tarPlugin.vim"
+    "runtime/plugin/tohtml.lua"
+    "runtime/plugin/tutor.vim"
+    "runtime/plugin/zipPlugin.vim"
   ];
 in
 neovim-wrapped.overrideAttrs (oa: {
