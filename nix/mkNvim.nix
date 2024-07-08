@@ -47,11 +47,21 @@ let
       ''--set LIBSQLITE "${pkgs.sqlite.out}/lib/libsqlite3.so"'')
   );
 
-  # FIXME:
   # Disable RTP plugins
-  # removeRtpPaths = map (target: "rm -f $out/share/nvim/${target}") [
-  #   "runtime/plugin/matchit.vim"
-  # ];
+  removeRuntimePlugins = map (target: "rm -f $out/share/nvim/runtime/plugin/${target}") [
+    "gzip.vim"
+    "matchit.vim"
+    "matchparen.vim"
+    "netrwPlugin.vim"
+    "osc52.lua"
+    "rplugin.vim"
+    "rplugin.vim.orig"
+    "spellfile.vim"
+    "tarPlugin.vim"
+    "tohtml.lua"
+    "tutor.vim"
+    "zipPlugin.vim"
+  ];
 
   neovim-wrapped = pkgs.wrapNeovimUnstable neovim-unwrapped (
     neovimConfig // {
@@ -63,10 +73,9 @@ let
     }
   );
 in
-# neovim-wrapped.overrideAttrs (oa: {
-  #   installPhase = ''
-  #     ${oa.postInstall or ""}
-  #     ${lib.concatStringsSep "\n" removeRtpPaths}
-  #   '';
-  # })
-neovim-wrapped
+neovim-wrapped.overrideAttrs (oa: {
+  installPhase = ''
+    ${oa.postInstall or ""}
+    ${lib.concatStringsSep "\n" removeRuntimePlugins}
+  '';
+})
