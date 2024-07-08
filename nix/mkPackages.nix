@@ -3,32 +3,22 @@
 , pkgs
 }:
 let
-  neovim-unwrapped = pkgs.neovim;
-
-  patchedNeovim = neovim-unwrapped.overrideAttrs (oa: {
-    patches = oa.patches ++ [ ./0001-NIX_ABS_PATH.patch ];
-  });
-
-  extraPackages = import ./extraPackages.nix { inherit config pkgs; };
-
-  extraLuaPackages = import ./extraLuaPackages.nix;
-
-  plugins = import ./plugins.nix { inherit pkgs; };
-
-  nvim = import ./mkNvim.nix {
+  mk-nvim-config = {
     inherit lib pkgs;
-    inherit extraPackages extraLuaPackages plugins;
-    inherit neovim-unwrapped;
-  };
 
-  nvim-dev = import ./mkNvim.nix {
-    inherit lib pkgs;
-    inherit extraPackages extraLuaPackages plugins;
-    neovim-unwrapped = patchedNeovim;
+    extraPackages = import ./extraPackages.nix { inherit config pkgs; };
+
+    extraLuaPackages = import ./extraLuaPackages.nix;
+
+    plugins = import ./plugins.nix { inherit pkgs; };
+
+    neovim-unwrapped = pkgs.neovim;
   };
 in
-{
-  inherit nvim nvim-dev;
+rec {
+  nvim = import ./mkNvim.nix mk-nvim-config;
+
+  nvim-dev = import ./mkNvim.nix (mk-nvim-config // { dev = true; });
 
   default = nvim;
 }

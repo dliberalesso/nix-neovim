@@ -1,6 +1,7 @@
 { lib
 , pkgs
 , defaultEditor ? true
+, dev ? false
 , extraPackages ? [ ]
 , extraLuaPackages ? _p: [ ]
 , neovim-unwrapped ? pkgs.neovim-unwrapped
@@ -36,8 +37,10 @@ let
 
   # Add arguments to the Neovim wrapper script
   extraMakeWrapperArgs = builtins.concatStringsSep " " (
+    # Set $VIM
+    [ ''--set VIM "${placeholder "out"}/share/nvim"'' ]
     # Add external packages to the PATH
-    (lib.optional (externalPackages != [ ])
+    ++ (lib.optional (externalPackages != [ ])
       ''--prefix PATH : "${lib.makeBinPath externalPackages}"'')
     # Set the LIBSQLITE_CLIB_PATH if sqlite is enabled
     ++ (lib.optional withSqlite
@@ -45,6 +48,20 @@ let
     # Set the LIBSQLITE environment variable if sqlite is enabled
     ++ (lib.optional withSqlite
       ''--set LIBSQLITE "${pkgs.sqlite.out}/lib/libsqlite3.so"'')
+  );
+
+  patchedNeovim = neovim-unwrapped.overrideAttrs (oa: {
+    patches = oa.patches ++ (lib.optional dev ./0001-NIX_ABS_PATH.patch);
+  });
+
+  neovim-wrapped = pkgs.wrapNeovimUnstable patchedNeovim (
+    neovimConfig // {
+      wrapperArgs =
+        lib.escapeShellArgs neovimConfig.wrapperArgs
+        + " "
+        + extraMakeWrapperArgs;
+      wrapRc = false;
+    }
   );
 
   # Disable RTP plugins
@@ -62,16 +79,6 @@ let
     "tutor.vim"
     "zipPlugin.vim"
   ];
-
-  neovim-wrapped = pkgs.wrapNeovimUnstable neovim-unwrapped (
-    neovimConfig // {
-      wrapperArgs =
-        lib.escapeShellArgs neovimConfig.wrapperArgs
-        + " "
-        + extraMakeWrapperArgs;
-      wrapRc = false;
-    }
-  );
 in
 neovim-wrapped.overrideAttrs (oa: {
   installPhase = ''
