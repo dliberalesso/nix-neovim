@@ -83,7 +83,7 @@ let
   ];
 in
 neovim-wrapped.overrideAttrs (oa: {
-  installPhase = ''
+  postInstall = ''
     ${oa.postInstall or ""}
     ${lib.concatStringsSep "\n" removeRuntimePlugins}
   '';
