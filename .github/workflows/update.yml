@@ -1,0 +1,41 @@
+name: "Update"
+
+on:
+  schedule:
+    - cron: "0 7 * * 3" # At 07:00 UTC on WED
+    - cron: "0 7 * * 0-2,4-6" # At 07:00 UTC from SUN to TUE & THU to SAT
+
+  workflow_dispatch:
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: "Install Nix ❄️"
+        uses: DeterminateSystems/nix-installer-action@v16
+
+      - name: "Update flake.lock"
+        uses: DeterminateSystems/update-flake-lock@v24
+        id: nix-update
+        with:
+          token: ${{ secrets.PAT }}
+          nix-options: --accept-flake-config
+          branch: update
+          git-author-name: Douglas Liberalesso
+          git-author-email: dliberalesso@users.noreply.github.com
+          git-committer-name: Douglas Liberalesso
+          git-committer-email: dliberalesso@users.noreply.github.com
+          pr-assignees: dliberalesso
+          pr-labels: dependencies, nix
+
+      - name: Enable Pull Request Automerge
+        if: (steps.nix-update.outputs.pull-request-operation == 'created' || steps.nix-update.outputs.pull-request-operation == 'updated') && (github.event_name == 'workflow_dispatch' || github.event.schedule == '0 7 * * 3')
+        uses: peter-evans/enable-pull-request-automerge@v2
+        with:
+          token: ${{ secrets.PAT }}
+          pull-request-number: ${{ steps.nix-update.outputs.pull-request-number }}
